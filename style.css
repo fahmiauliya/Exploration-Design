@@ -1,0 +1,315 @@
+/* ========================================
+   BASE RESET
+   ======================================== */
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000;
+}
+
+canvas {
+    display: block;
+    touch-action: none;
+}
+
+/* ========================================
+   UI OVERLAY — bottom-left status
+   ======================================== */
+#overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: #00ff00;
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 12px;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* ========================================
+   MENU — top-right panel
+   ======================================== */
+#menu {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 100;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* Scrollbar styling */
+#menu::-webkit-scrollbar {
+    width: 3px;
+}
+
+#menu::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 0, 0.3);
+    border-radius: 2px;
+}
+
+/* Section labels */
+.section-label {
+    color: rgba(0, 255, 0, 0.5);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-top: 4px;
+    padding-left: 2px;
+}
+
+/* Pattern mode buttons */
+#pattern-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.btn {
+    background: rgba(0, 40, 0, 0.7);
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    padding: 5px 12px;
+    font-family: 'Courier New', Courier, monospace;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 10px;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.btn:hover {
+    background: #00ff00;
+    color: #000;
+}
+
+.btn.active {
+    background: #00ff00;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+/* ========================================
+   SOURCE SELECTOR
+   ======================================== */
+.btn-source {
+    background: rgba(0, 20, 40, 0.7);
+    border: 1px solid #00ccff;
+    color: #00ccff;
+    padding: 5px 12px;
+    font-family: 'Courier New', Courier, monospace;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 10px;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.btn-source:hover {
+    background: #00ccff;
+    color: #000;
+}
+
+.btn-source.active {
+    background: #00ccff;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 204, 255, 0.5);
+}
+
+#image-input,
+#video-input {
+    display: none;
+}
+
+#source-info {
+    color: rgba(0, 204, 255, 0.7);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 6px;
+    border-left: 2px solid rgba(0, 204, 255, 0.3);
+    word-break: break-all;
+    display: none;
+}
+
+#source-info.visible {
+    display: block;
+}
+
+/* ========================================
+   CONTROLS SECTION
+   ======================================== */
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9px;
+    color: rgba(255, 200, 0, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.control-row label {
+    flex-shrink: 0;
+    min-width: 42px;
+}
+
+.control-row input[type="range"] {
+    flex: 1;
+    height: 3px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 200, 0, 0.3);
+    border-radius: 2px;
+    outline: none;
+}
+
+.control-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #ffc800;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(255, 200, 0, 0.5);
+}
+
+.control-row input[type="color"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 1px solid rgba(255, 200, 0, 0.5);
+    border-radius: 3px;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.control-row input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 1px;
+}
+
+.control-row input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 2px;
+}
+
+.control-row .value-display {
+    min-width: 24px;
+    text-align: right;
+    font-size: 9px;
+    opacity: 0.6;
+}
+
+/* Color mode buttons */
+#color-mode-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+
+.btn-color {
+    background: rgba(40, 30, 0, 0.7);
+    border: 1px solid #ffc800;
+    color: #ffc800;
+    padding: 4px 8px;
+    font-family: 'Courier New', Courier, monospace;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 8px;
+    transition: all 0.3s;
+    text-align: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.btn-color:hover {
+    background: #ffc800;
+    color: #000;
+}
+
+.btn-color.active {
+    background: #ffc800;
+    color: #000;
+    box-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
+}
+
+#tint-picker-row {
+    display: none;
+}
+
+#tint-picker-row.visible {
+    display: flex;
+}
+
+/* ========================================
+   EXPORT SECTION
+   ======================================== */
+.export-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 2px 0;
+}
+
+.btn-export {
+    background: rgba(40, 0, 40, 0.7);
+    border: 1px solid #ff00ff;
+    color: #ff00ff;
+    padding: 5px 12px;
+    font-family: 'Courier New', Courier, monospace;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 10px;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.btn-export:hover {
+    background: #ff00ff;
+    color: #000;
+}
+
+.btn-export:disabled {
+    opacity: 0.4;
+    cursor: wait;
+}
+
+/* ========================================
+   TOAST NOTIFICATION
+   ======================================== */
+#toast {
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(0, 255, 0, 0.15);
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    padding: 12px 24px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s, transform 0.4s;
+    z-index: 999;
+    backdrop-filter: blur(8px);
+}
+
+#toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

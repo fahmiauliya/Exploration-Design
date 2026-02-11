@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pattern Generator — Blissful Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Status overlay -->
+    <div id="overlay">
+        System Active // Pattern: <span id="current-pattern">Plus</span> // Source: <span id="current-source">3D
+            Scene</span>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="image-input" accept="image/*">
+    <input type="file" id="video-input" accept="video/*">
+
+    <!-- Right-side menu -->
+    <div id="menu">
+        <!-- ═══════ Source ═══════ -->
+        <span class="section-label">⌂ Source</span>
+        <div style="display:flex; gap:4px; margin-bottom:4px;">
+            <button class="btn-source active" id="btn-scene-1" onclick="window.switchScene(0)">🔶 Shapes</button>
+            <button class="btn-source" id="btn-scene-2" onclick="window.switchScene(1)">🌍 Globe</button>
+            <button class="btn-source" id="btn-scene-3" onclick="window.switchScene(2)">🪐 Saturn</button>
+        </div>
+        <button class="btn-source" id="btn-src-img" onclick="window.switchToImage()">⬆ Image</button>
+        <button class="btn-source" id="btn-src-vid" onclick="window.switchToVideo()">⬆ Video</button>
+        <button class="btn-source" id="btn-src-cam" onclick="window.switchToWebcam()">📹 Webcam</button>
+        <div id="source-info"></div>
+
+        <div class="export-divider"></div>
+
+        <!-- ═══════ Pattern ═══════ -->
+        <span class="section-label">◆ Pattern</span>
+        <div id="pattern-buttons">
+            <button class="btn active" onclick="setPattern(0, this)">1. Plus (+)</button>
+            <button class="btn" onclick="setPattern(1, this)">2. ASCII (#O+.)</button>
+            <button class="btn" onclick="setPattern(2, this)">3. Symbols (*=:.)</button>
+            <button class="btn" onclick="setPattern(3, this)">4. Dot Pixel</button>
+            <button class="btn" onclick="setPattern(4, this)">5. Lines ☰</button>
+            <button class="btn" onclick="setPattern(5, this)">6. Diamond ◆</button>
+            <button class="btn" onclick="setPattern(6, this)">7. Cross-hatch ╳</button>
+            <button class="btn" onclick="setPattern(7, this)">8. Blocks ■</button>
+        </div>
+
+        <div class="export-divider"></div>
+
+        <!-- ═══════ Controls ═══════ -->
+        <span class="section-label">⚙ Controls</span>
+
+        <!-- Invert Mode (Paper Mode) -->
+        <div class="control-row" style="margin-bottom: 6px;">
+            <label>Invert</label>
+            <input type="checkbox" id="invert-check" onchange="window.toggleInvert(this)"
+                style="width:14px; height:14px; cursor:pointer; accent-color:#00ff00;">
+            <span class="value-display" style="text-align:left; padding-left:4px; opacity:0.8; font-size:10px;">(Paper
+                Mode)</span>
+        </div>
+
+        <!-- Exposure / Brightness -->
+        <div class="control-row">
+            <label>Expo</label>
+            <input type="range" id="exposure-slider" min="0.0" max="3.0" value="1.0" step="0.1">
+            <span class="value-display" id="exposure-val">1.0</span>
+        </div>
+
+        <!-- Cell Size -->
+        <div class="control-row">
+            <label>Size</label>
+            <input type="range" id="cell-size-slider" min="4" max="40" value="14" step="1">
+            <span class="value-display" id="cell-size-val">14</span>
+        </div>
+
+        <!-- Reveal Size -->
+        <div class="control-row">
+            <label>Reveal</label>
+            <input type="range" id="reveal-slider" min="0" max="40" value="18" step="1">
+            <span class="value-display" id="reveal-val">18</span>
+        </div>
+
+        <!-- Color Mode -->
+        <div id="color-mode-buttons">
+            <button class="btn-color active" onclick="window.setColorMode(0, this)">RGB</button>
+            <button class="btn-color" onclick="window.setColorMode(1, this)">Term</button>
+            <button class="btn-color" onclick="window.setColorMode(2, this)">Mono</button>
+            <button class="btn-color" onclick="window.setColorMode(3, this)">Neon</button>
+            <button class="btn-color" onclick="window.setColorMode(4, this)">Tint</button>
+        </div>
+
+        <!-- Tint Color (shown only in Tint mode) -->
+        <div class="control-row" id="tint-picker-row">
+            <label>Tint</label>
+            <input type="color" id="tint-color" value="#ff00ff">
+        </div>
+
+        <!-- Background Color -->
+        <div class="control-row">
+            <label>BG</label>
+            <input type="color" id="bg-color" value="#000000">
+        </div>
+
+        <div class="export-divider"></div>
+
+        <!-- ═══════ Export ═══════ -->
+        <span class="section-label">⬇ Export</span>
+        <button class="btn-export" id="btn-png" onclick="window.exportPNG()">⬇ Export PNG</button>
+        <button class="btn-export" id="btn-svg" onclick="window.exportSVG()">⬇ Export SVG</button>
+        <button class="btn-export" id="btn-record" onclick="window.toggleRecord()"
+            style="border-color: #ff0000; color: #ff0000;">🔴 Record WebM</button>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
