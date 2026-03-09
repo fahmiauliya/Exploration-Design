@@ -1,1 +1,3 @@
-weather/assets/
+
+# Local Netlify folder
+.netlify
