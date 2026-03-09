@@ -1,0 +1,111 @@
+/* ===== KEYFRAMES ===== */
+
+@keyframes driftCloud {
+  from { transform: translateX(-10%); }
+  to   { transform: translateX(110vw); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-8px) rotate(1deg); }
+  66%       { transform: translateY(-4px) rotate(-1deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50%       { transform: scale(1.15); opacity: 0.8; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes iconEntrance {
+  0%   { transform: scale(0.6) translateY(10px); opacity: 0; filter: blur(4px); }
+  60%  { transform: scale(1.1) translateY(-4px); opacity: 1; filter: blur(0); }
+  100% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); }
+}
+
+@keyframes cardEntrance {
+  from { transform: translateY(24px) scale(0.96); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes lightning {
+  0%, 90%, 92%, 94%, 100% { opacity: 0; }
+  91%, 93%                { opacity: 0.6; }
+}
+
+@keyframes snowflakeFall {
+  0%   { transform: translateY(-10px) rotate(0deg) translateX(0); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg) translateX(var(--drift)); opacity: 0; }
+}
+
+@keyframes rainFall {
+  0%   { transform: translateY(-10px) scaleY(1); opacity: 0; }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.7; }
+  100% { transform: translateY(100vh) scaleY(1); opacity: 0; }
+}
+
+@keyframes sunRay {
+  0%, 100% { transform: rotate(var(--angle)) scaleX(1); opacity: 0.4; }
+  50%       { transform: rotate(calc(var(--angle) + 15deg)) scaleX(1.3); opacity: 0.7; }
+}
+
+/* ===== WEATHER ICON ANIMATIONS ===== */
+.icon-sunny {
+  animation: float 4s ease-in-out infinite;
+}
+
+.icon-cloudy {
+  animation: float 6s ease-in-out infinite;
+}
+
+.icon-rainy {
+  animation: float 3.5s ease-in-out infinite;
+}
+
+.icon-stormy {
+  animation: float 2.5s ease-in-out infinite;
+}
+
+.icon-snowy {
+  animation: float 5s ease-in-out infinite;
+}
+
+/* ===== ICON GLOW ANIMATIONS ===== */
+.glow-sunny {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.glow-cloudy {
+  animation: pulse 5s ease-in-out infinite;
+}
+
+.glow-rainy {
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+.glow-stormy {
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+.glow-snowy {
+  animation: pulse 4s ease-in-out infinite;
+}
+
+/* ===== CARD ENTRANCE ===== */
+.weather-card {
+  animation: cardEntrance 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ===== WEATHER ICON ENTRANCE ===== */
+.icon-entering {
+  animation: iconEntrance 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+}
+
+/* Lightning, sun rays, and clouds are now rendered by atmosphere.js canvas */
