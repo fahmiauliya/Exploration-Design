@@ -1,0 +1,325 @@
+/* ============================================================
+   RECURRING PAYMENTS — Blyss node 172:2385 exact tokens
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --btn-bg:     #161616;
+  --btn-bdr:    #252525;
+  --text-warm:  #f0ede4;   /* r:0.941 g:0.925 b:0.894 */
+  --gold:       #c9a76b;
+  --green:      #3dcf8e;   /* r:0.243 g:0.812 b:0.557 */
+  --red:        #ff5c5c;
+  --amber:      #f5a623;
+  --green-bg:   rgba(61,207,142,0.14);
+  --green-bdr:  rgba(61,207,142,0.22);
+  --red-bg:     rgba(255,92,92,0.14);
+  --red-bdr:    rgba(255,92,92,0.22);
+  --amber-bg:   rgba(245,166,35,0.14);
+  --amber-bdr:  rgba(245,166,35,0.22);
+  --font:       'Montserrat', sans-serif;
+  --font-label: 'Inter', sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  background: #060606;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Phone ── */
+.phone {
+  width: 373px; height: 812px;
+  background: #0d0d0d;
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  display: flex; flex-direction: column;
+  border: 1px solid #1e1e1e;
+  box-shadow: 0 0 0 1px #0a0a0a, 0 60px 140px rgba(0,0,0,0.98),
+              inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.phone::before {
+  content: ''; position: absolute; top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 30px; background: #060606;
+  border-radius: 0 0 18px 18px; z-index: 100;
+}
+
+/* ── Status Bar ── */
+.status-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 28px 0; height: 32px; flex-shrink: 0;
+  position: relative; z-index: 1;
+}
+.time {
+  font-family: var(--font); font-size: 15px; font-weight: 600;
+  color: var(--text-warm); letter-spacing: -0.3px;
+}
+.status-icons { display: flex; align-items: center; gap: 6px; }
+.battery {
+  width: 25px; height: 13px; border: 1.5px solid rgba(255,255,255,0.45);
+  border-radius: 3px; position: relative; display: flex; align-items: center; padding: 2px;
+}
+.battery::after {
+  content: ''; position: absolute; right: -5px; top: 50%;
+  transform: translateY(-50%); width: 3px; height: 6px;
+  background: rgba(255,255,255,0.45); border-radius: 0 2px 2px 0;
+}
+.battery-fill { width: 75%; height: 100%; background: white; border-radius: 1px; }
+
+/* ── Header ── */
+/* paddingLeft 20, paddingRight 20, paddingTop 18, paddingBottom 6 */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px 6px; height: 64px; flex-shrink: 0;
+  position: relative; z-index: 1;
+}
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 20px;
+  background: var(--btn-bg); border: 1px solid var(--btn-bdr);
+  display: flex; align-items: center; justify-content: center;
+  color: #6e6a66; cursor: pointer; flex-shrink: 0; transition: background 0.18s;
+}
+.icon-btn:hover { background: #1e1e1e; }
+
+/* "recurring payments" — Montserrat Regular 400, 14px, white, -0.14px */
+.header-title {
+  font-family: var(--font); font-size: 14px; font-weight: 400;
+  color: #ffffff; letter-spacing: -0.14px; text-transform: lowercase;
+}
+
+/* ── Counter ── */
+.counter-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 24px 14px; flex-shrink: 0; position: relative; z-index: 1;
+}
+/* Montserrat Regular 400, 12px, #6e6a66, -0.12px */
+.counter-text {
+  font-family: var(--font); font-size: 12px; font-weight: 400;
+  color: #6e6a66; letter-spacing: -0.12px;
+}
+/* Pills: 20×3px, r:2, gold, gap 4px */
+.counter-pills { display: flex; gap: 4px; align-items: center; }
+.pill { width: 20px; height: 3px; border-radius: 2px; background: var(--btn-bdr); transition: background 0.3s; }
+.pill.active { background: var(--gold); }
+
+/* ── Stack Area ── */
+.stack-area {
+  flex: 1; position: relative; margin: 0 20px; z-index: 1;
+}
+.card-slot {
+  position: absolute; inset: 0;
+  display: flex; align-items: stretch;
+  transition: transform 0.38s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.card-slot[data-slot="0"] { z-index: 4; transform: scale(1)    translateY(0px);  }
+.card-slot[data-slot="1"] { z-index: 3; transform: scale(0.95) translateY(16px); }
+.card-slot[data-slot="2"] { z-index: 2; transform: scale(0.90) translateY(32px); }
+.card-slot[data-slot="3"] { z-index: 1; transform: scale(0.85) translateY(48px); }
+.card-slot.promote-0 { z-index: 4; transform: scale(1)    translateY(0px);  }
+.card-slot.promote-1 { z-index: 3; transform: scale(0.95) translateY(16px); }
+.card-slot.promote-2 { z-index: 2; transform: scale(0.90) translateY(32px); }
+.card-slot.promote-3 { z-index: 1; transform: scale(0.85) translateY(48px); }
+
+/* ── Payment Card ── */
+/* cornerRadius 22, stroke white 7%, 1px inside, bg-image, padding 24 all */
+.payment-card {
+  flex: 1;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,0.07);
+  overflow: hidden;
+  position: relative;
+  display: flex; flex-direction: column;
+  padding: 24px;
+  touch-action: none; cursor: grab; transform-origin: center bottom;
+  /* Figma image background */
+  background-image: url('assets/card-bg.png');
+  background-size: 110%;
+  background-position: center center;
+}
+.payment-card:active { cursor: grabbing; }
+
+/* ── Card Header Row ── */
+/* HORIZONTAL, SPACE_BETWEEN, no extra padding (card has 24px already) */
+.card-header-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-shrink: 0; position: relative; z-index: 2;
+}
+
+/* Brand icon: 48×48px, r:14, bg white 6%, border white 10% */
+.brand-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* Badge: Montserrat Medium 500, 10px, -0.1px, padding 10/5, r:20 */
+.card-badge {
+  font-family: var(--font); font-size: 10px; font-weight: 500;
+  letter-spacing: -0.1px; text-transform: lowercase;
+  padding: 5px 10px; border-radius: 20px; line-height: 1;
+}
+.active-badge { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bdr); }
+.paused-badge { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bdr); }
+
+/* ── Card Spacer ── */
+/* Takes up all middle space (where the sphere image shows through) */
+.card-spacer { flex: 1; }
+
+/* ── Card Content (bottom) ── */
+.card-content {
+  flex-shrink: 0; position: relative; z-index: 2;
+}
+
+/* Title section: item spacing 4px */
+.card-title-section { margin-bottom: 0; }
+
+/* "Netflix" — Montserrat Medium 500, 26px, #F0EDE4, -0.6px */
+.merchant-name {
+  font-family: var(--font); font-size: 26px; font-weight: 500;
+  color: var(--text-warm); letter-spacing: -0.6px; line-height: 1.22;
+  margin-bottom: 4px;
+}
+
+/* "Entertainment · Streaming" — Montserrat Regular 400, 12px, WHITE */
+.merchant-sub {
+  font-family: var(--font); font-size: 12px; font-weight: 400;
+  color: #ffffff; letter-spacing: 0; line-height: 1.22;
+}
+
+/* ── Price Section ── */
+/* HORIZONTAL SPACE_BETWEEN, top border white 7%, padding-top 14px */
+.price-section {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.price-left { display: flex; align-items: baseline; gap: 5px; }
+
+/* "₹649" — Montserrat Medium 500, 34px, #F0EDE4, -1.5px */
+.amount-value {
+  font-family: var(--font); font-size: 34px; font-weight: 500;
+  color: var(--text-warm); letter-spacing: -1.5px; line-height: 1;
+}
+
+/* "/ month" — Montserrat Regular 400, 12px, WHITE */
+.amount-freq {
+  font-family: var(--font); font-size: 12px; font-weight: 400;
+  color: #ffffff; letter-spacing: -0.12px;
+}
+
+.price-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+
+/* "next on" — Montserrat Regular 400, 10px, white 50% opacity */
+.date-label {
+  font-family: var(--font); font-size: 10px; font-weight: 400;
+  color: rgba(255,255,255,0.5); letter-spacing: -0.1px;
+}
+
+/* "15 Mar" — Montserrat Medium 500, 13px, WHITE */
+.date-value {
+  font-family: var(--font); font-size: 13px; font-weight: 500;
+  color: #ffffff; letter-spacing: -0.13px;
+}
+
+/* ── Payment Section ── */
+/* HORIZONTAL, top border white 6%, padding-top 14px, item-spacing 8px */
+.payment-section {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Mastercard: 35×24px, r:4 */
+.mastercard-icon {
+  width: 35px; height: 24px; border-radius: 4px;
+  background: #1a1a1a; border: 1px solid rgba(217,217,217,0.3);
+  flex-shrink: 0; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.mastercard-icon svg { width: 28px; height: 24px; overflow: visible; }
+.mc-left  { fill: #EB001B; }
+.mc-right { fill: #F79E1B; opacity: 0.85; }
+
+/* "HDFC •••• 4291" — Montserrat Medium 500, 11px, white 50% opacity */
+.bank-label {
+  font-family: var(--font); font-size: 11px; font-weight: 500;
+  color: rgba(255,255,255,0.5); letter-spacing: -0.11px;
+}
+
+/* ── Empty State ── */
+.empty-state {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+}
+.empty-state.visible { opacity: 1; }
+.empty-icon {
+  width: 56px; height: 56px; border-radius: 28px;
+  background: var(--green-bg); border: 1px solid var(--green-bdr);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green); margin-bottom: 6px;
+}
+/* "all done" — Inter Bold 700, 18px, warm white, -0.3px */
+.empty-title {
+  font-family: var(--font); font-size: 18px; font-weight: 700;
+  color: var(--text-warm); letter-spacing: -0.3px;
+}
+/* "you've reviewed…" — Montserrat Regular 400, 13px, muted, centered */
+.empty-sub {
+  font-family: var(--font); font-size: 13px; font-weight: 400;
+  color: #6e6a66; text-align: center; line-height: 1.5;
+}
+
+/* ── Action Hint ── */
+/* Montserrat Medium 500, 12px, -0.12px, opacity 0.6 */
+.action-hint {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 32px; flex-shrink: 0; position: relative; z-index: 1;
+}
+.hint-item {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font); font-size: 12px; font-weight: 500;
+  letter-spacing: -0.12px; text-transform: lowercase; opacity: 0.6;
+}
+.hint-left  { color: var(--red); }
+.hint-right { color: var(--green); }
+
+/* ── Action Buttons ── */
+/* 68×68px, r:100 */
+.action-btns {
+  display: flex; align-items: center; justify-content: center;
+  gap: 24px; padding: 0 20px 40px; flex-shrink: 0; position: relative; z-index: 1;
+}
+.action-btn {
+  width: 68px; height: 68px; border-radius: 100px;
+  border: 1px solid transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.action-btn:hover  { transform: scale(1.07); }
+.action-btn:active { transform: scale(0.93); opacity: 0.85; }
+.skip-btn   { background: var(--red-bg);   color: var(--red);   border-color: var(--red-bdr); }
+.remind-btn { background: var(--green-bg); color: var(--green); border-color: var(--green-bdr); }
+
+/* ── Card orb div — hidden (image handles it) ── */
+.card-orb { display: none; }
+
+/* ── Drag states ── */
+.payment-card.is-dragging { cursor: grabbing; }
+.payment-card.fly-right {
+  transition: transform 0.45s cubic-bezier(0.25,1,0.5,1), opacity 0.45s ease !important;
+  transform: translateX(160%) rotate(25deg) !important; opacity: 0 !important;
+}
+.payment-card.fly-left {
+  transition: transform 0.45s cubic-bezier(0.25,1,0.5,1), opacity 0.45s ease !important;
+  transform: translateX(-160%) rotate(-25deg) !important; opacity: 0 !important;
+}
+.payment-card.snap-back {
+  transition: transform 0.42s cubic-bezier(0.34,1.56,0.64,1) !important;
+}

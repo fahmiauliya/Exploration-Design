@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recurring Payments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="scene">
+      <div class="phone">
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span class="time">9:41</span>
+          <div class="status-icons">
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+              <rect x="0" y="4" width="3" height="8" rx="1" fill="white" opacity="0.4"/>
+              <rect x="4.5" y="2" width="3" height="10" rx="1" fill="white" opacity="0.6"/>
+              <rect x="9" y="0" width="3" height="12" rx="1" fill="white"/>
+            </svg>
+            <svg width="15" height="12" viewBox="0 0 15 12" fill="none">
+              <path d="M7.5 2C9.5 2 11.3 2.8 12.6 4.1L14 2.7C12.3 1 10 0 7.5 0C5 0 2.7 1 1 2.7L2.4 4.1C3.7 2.8 5.5 2 7.5 2Z" fill="white" opacity="0.4"/>
+              <path d="M7.5 5C8.8 5 10 5.5 10.9 6.4L12.3 5C11 3.7 9.3 3 7.5 3C5.7 3 4 3.7 2.7 5L4.1 6.4C5 5.5 6.2 5 7.5 5Z" fill="white" opacity="0.7"/>
+              <circle cx="7.5" cy="10" r="1.5" fill="white"/>
+            </svg>
+            <div class="battery"><div class="battery-fill"></div></div>
+          </div>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+          <button class="icon-btn" aria-label="Back">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <h1 class="header-title">recurring payments</h1>
+          <button class="icon-btn" aria-label="More">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="5.5" r="1.3" fill="currentColor"/>
+              <circle cx="10" cy="10"  r="1.3" fill="currentColor"/>
+              <circle cx="10" cy="14.5" r="1.3" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Counter -->
+        <div class="counter-row">
+          <span class="counter-text" id="counterText">4 subscriptions to review</span>
+          <div class="counter-pills" id="counterPills">
+            <span class="pill active"></span>
+            <span class="pill active"></span>
+            <span class="pill active"></span>
+            <span class="pill active"></span>
+          </div>
+        </div>
+
+        <!-- Card Stack -->
+        <div class="stack-area" id="stackArea">
+
+          <!-- Slot 3 — deepest -->
+          <div class="card-slot" data-slot="3">
+            <div class="payment-card" data-index="3" style="background-image:url('assets/card-bg-youtube.png')">
+              <div class="card-header-row">
+                <div class="brand-icon">
+                  <img src="assets/youtube-icon.png" alt="YouTube" style="width:24px;height:24px;object-fit:contain;" />
+                </div>
+                <div class="card-badge paused-badge">paused</div>
+              </div>
+              <div class="card-spacer"></div>
+              <div class="card-content">
+                <div class="card-title-section">
+                  <div class="merchant-name">Youtube</div>
+                  <div class="merchant-sub">Entertainment · Video</div>
+                </div>
+                <div class="price-section">
+                  <div class="price-left">
+                    <span class="amount-value">$198</span>
+                    <span class="amount-freq">/ month</span>
+                  </div>
+                  <div class="price-right">
+                    <span class="date-label">next on</span>
+                    <span class="date-value">29 Mar</span>
+                  </div>
+                </div>
+                <div class="payment-section">
+                  <div class="mastercard-icon">
+                    <svg viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="9"  cy="9" r="9" fill="#EB001B"/>
+                      <circle cx="17" cy="9" r="9" fill="#F79E1B" fill-opacity="0.9"/>
+                    </svg>
+                  </div>
+                  <span class="bank-label">0422 — 5938</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slot 2 -->
+          <div class="card-slot" data-slot="2">
+            <div class="payment-card" data-index="2" style="background-image:url('assets/card-bg-amazon.png')">
+              <div class="card-header-row">
+                <div class="brand-icon">
+                  <img src="assets/amazon-icon.png" alt="Amazon" style="width:24px;height:24px;object-fit:contain;" />
+                </div>
+                <div class="card-badge paused-badge">paused</div>
+              </div>
+              <div class="card-spacer"></div>
+              <div class="card-content">
+                <div class="card-title-section">
+                  <div class="merchant-name">Amazon Prime</div>
+                  <div class="merchant-sub">Shopping · Membership</div>
+                </div>
+                <div class="price-section">
+                  <div class="price-left">
+                    <span class="amount-value">$293</span>
+                    <span class="amount-freq">/ month</span>
+                  </div>
+                  <div class="price-right">
+                    <span class="date-label">next on</span>
+                    <span class="date-value">31 Mar</span>
+                  </div>
+                </div>
+                <div class="payment-section">
+                  <div class="mastercard-icon">
+                    <svg viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="9"  cy="9" r="9" fill="#EB001B"/>
+                      <circle cx="17" cy="9" r="9" fill="#F79E1B" fill-opacity="0.9"/>
+                    </svg>
+                  </div>
+                  <span class="bank-label">5242 — 4291</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slot 1 -->
+          <div class="card-slot" data-slot="1">
+            <div class="payment-card" data-index="1" style="background-image:url('assets/card-bg-spotify.png')">
+              <div class="card-header-row">
+                <div class="brand-icon">
+                  <img src="assets/spotify-icon.png" alt="Spotify" style="width:24px;height:24px;object-fit:contain;" />
+                </div>
+                <div class="card-badge paused-badge">paused</div>
+              </div>
+              <div class="card-spacer"></div>
+              <div class="card-content">
+                <div class="card-title-section">
+                  <div class="merchant-name">Spotify</div>
+                  <div class="merchant-sub">Entertainment · Music · Podcast</div>
+                </div>
+                <div class="price-section">
+                  <div class="price-left">
+                    <span class="amount-value">$112</span>
+                    <span class="amount-freq">/ month</span>
+                  </div>
+                  <div class="price-right">
+                    <span class="date-label">next on</span>
+                    <span class="date-value">8 Mar</span>
+                  </div>
+                </div>
+                <div class="payment-section">
+                  <div class="mastercard-icon">
+                    <svg viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="9"  cy="9" r="9" fill="#EB001B"/>
+                      <circle cx="17" cy="9" r="9" fill="#F79E1B" fill-opacity="0.9"/>
+                    </svg>
+                  </div>
+                  <span class="bank-label">8203 — 4281</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slot 0 — top -->
+          <div class="card-slot" data-slot="0">
+            <div class="payment-card" data-index="0">
+              <div class="card-header-row">
+                <div class="brand-icon">
+                  <img src="assets/netflix-logo.png" alt="Netflix" style="width:14px;height:26px;object-fit:contain;" />
+                </div>
+                <div class="card-badge active-badge">auto-pay on</div>
+              </div>
+              <div class="card-spacer"></div>
+              <div class="card-content">
+                <div class="card-title-section">
+                  <div class="merchant-name">Netflix</div>
+                  <div class="merchant-sub">Entertainment · Streaming</div>
+                </div>
+                <div class="price-section">
+                  <div class="price-left">
+                    <span class="amount-value">$649</span>
+                    <span class="amount-freq">/ month</span>
+                  </div>
+                  <div class="price-right">
+                    <span class="date-label">next on</span>
+                    <span class="date-value">15 Mar</span>
+                  </div>
+                </div>
+                <div class="payment-section">
+                  <div class="mastercard-icon">
+                    <svg viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="9"  cy="9" r="9" fill="#EB001B"/>
+                      <circle cx="17" cy="9" r="9" fill="#F79E1B" fill-opacity="0.9"/>
+                    </svg>
+                  </div>
+                  <span class="bank-label">HDFC •••• 4291</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <path d="M4 11L9 16L18 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <p class="empty-title">All Done</p>
+            <p class="empty-sub">You've reviewed all recurring<br>payments</p>
+          </div>
+
+        </div>
+
+        <!-- Action Hint -->
+        <div class="action-hint">
+          <div class="hint-item hint-left">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Skip</span>
+          </div>
+          <div class="hint-item hint-right">
+            <span>Remind</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-btns">
+          <button class="action-btn skip-btn" id="skipBtn" aria-label="Skip">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path d="M16 6L6 16M6 6L16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="action-btn remind-btn" id="remindBtn" aria-label="Remind me">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path d="M11 3.5C7.96 3.5 5.5 5.96 5.5 9V13.5L3.5 15.5H18.5L16.5 13.5V9C16.5 5.96 14.04 3.5 11 3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M9 15.5C9 16.6 9.9 17.5 11 17.5C12.1 17.5 13 16.6 13 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
