@@ -2,7 +2,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --font: -apple-system, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  --font: 'Inter', system-ui, sans-serif;
 
   --transition-bg:     1.4s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-fast:   0.28s cubic-bezier(0.4, 0, 0.2, 1);

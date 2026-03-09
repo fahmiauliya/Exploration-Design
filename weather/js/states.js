@@ -4,7 +4,7 @@ const WEATHER_STATES = {
   sunny: {
     label: 'Sunny',
     desc: 'Clear skies, UV index high',
-    icon: '☀️',
+    icon: '🌤️',
     temp: '24°',
     humidity: '42%',
     wind: '12 km/h',
@@ -19,7 +19,7 @@ const WEATHER_STATES = {
   cloudy: {
     label: 'Cloudy',
     desc: 'Overcast, mild conditions',
-    icon: '⛅',
+    icon: '🌥️',
     temp: '17°',
     humidity: '68%',
     wind: '18 km/h',
@@ -34,7 +34,7 @@ const WEATHER_STATES = {
   rainy: {
     label: 'Rainy',
     desc: 'Heavy rain, carry an umbrella',
-    icon: '🌧️',
+    icon: '🌦️',
     temp: '13°',
     humidity: '91%',
     wind: '24 km/h',
@@ -49,7 +49,7 @@ const WEATHER_STATES = {
   stormy: {
     label: 'Stormy',
     desc: 'Severe storm warning issued',
-    icon: '⛈️',
+    icon: '⚡',
     temp: '10°',
     humidity: '96%',
     wind: '58 km/h',
@@ -64,7 +64,7 @@ const WEATHER_STATES = {
   snowy: {
     label: 'Snowy',
     desc: 'Light snowfall, roads icy',
-    icon: '❄️',
+    icon: '🌨️',
     temp: '−3°',
     humidity: '78%',
     wind: '9 km/h',
