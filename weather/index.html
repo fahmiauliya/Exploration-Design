@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Weather</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+  </head>
+  <body>
+
+    <div class="device-frame">
+
+      <!-- Background layers (absolute inside frame) -->
+      <div class="bg-scene">
+        <div class="bg-gradient" id="bgGradient"></div>
+        <video class="bg-video" id="bgVideoSunny"  src="assets/sunny.mp4"  autoplay muted loop playsinline></video>
+        <video class="bg-video" id="bgVideoCloudy" src="assets/cloudy.mp4" autoplay muted loop playsinline></video>
+        <video class="bg-video" id="bgVideoRainy"  src="assets/rainy.mp4"  autoplay muted loop playsinline></video>
+        <video class="bg-video" id="bgVideoStormy" src="assets/stormy.mp4" autoplay muted loop playsinline></video>
+        <video class="bg-video" id="bgVideoSnowy"  src="assets/snowy.mp4"  autoplay muted loop playsinline></video>
+        <div class="bg-overlay" id="bgOverlay"></div>
+        <canvas class="atmosphere-canvas" id="atmosphereCanvas"></canvas>
+        <canvas class="particle-canvas"   id="particleCanvas"></canvas>
+      </div>
+
+      <!-- Status bar -->
+      <div class="status-bar">
+        <div class="status-left">
+          <span class="status-time" id="statusTime">9:41</span>
+        </div>
+        <div class="status-right">
+          <!-- Signal bars -->
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="none">
+            <rect x="0"    y="3" width="3" height="8"  rx="1" fill="white"/>
+            <rect x="4.5"  y="2" width="3" height="9"  rx="1" fill="white"/>
+            <rect x="9"    y="1" width="3" height="10" rx="1" fill="white"/>
+            <rect x="13.5" y="0" width="3" height="11" rx="1" fill="white"/>
+          </svg>
+          <!-- WiFi -->
+          <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+            <path d="M7.5 10.5C8.33 10.5 9 9.83 9 9C9 8.17 8.33 7.5 7.5 7.5C6.67 7.5 6 8.17 6 9C6 9.83 6.67 10.5 7.5 10.5Z" fill="white"/>
+            <path d="M3.75 7.12C4.8 6.07 6.15 5.5 7.5 5.5C8.85 5.5 10.2 6.07 11.25 7.12" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M1.5 4.5C3.2 2.8 5.35 1.9 7.5 1.9C9.65 1.9 11.8 2.8 13.5 4.5" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          <!-- Battery -->
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="2" stroke="white" stroke-opacity="0.35"/>
+            <rect x="2" y="2" width="18" height="7" rx="1" fill="white"/>
+            <path d="M23 4V8C23.8 7.66 24.5 6.93 24.5 6C24.5 5.07 23.8 4.34 23 4Z" fill="white" fill-opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- App content -->
+      <main class="main">
+
+        <!-- Top: location + date centered -->
+        <div class="app-header">
+          <div class="location">San Francisco, CA</div>
+          <div class="date" id="currentDate"></div>
+        </div>
+
+        <!-- Center: icon + temperature -->
+        <div class="card-body">
+          <div class="weather-icon-wrap">
+            <div class="weather-icon" id="weatherIcon">🌤️</div>
+            <div class="icon-glow" id="iconGlow"></div>
+          </div>
+          <div class="temperature" id="temperature">24°</div>
+          <div class="weather-desc" id="weatherDesc">Clear skies, UV index high</div>
+        </div>
+
+        <!-- Bottom panel: stats + toggle -->
+        <div class="bottom-panel glass">
+          <div class="card-stats">
+            <div class="stat">
+              <span class="stat-icon">💧</span>
+              <span class="stat-value" id="humidity">42%</span>
+              <span class="stat-label">Humidity</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="stat-icon">💨</span>
+              <span class="stat-value" id="wind">12 km/h</span>
+              <span class="stat-label">Wind</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="stat-icon">👁️</span>
+              <span class="stat-value" id="visibility">10 km</span>
+              <span class="stat-label">Visibility</span>
+            </div>
+          </div>
+
+          <div class="toggle-wrap">
+            <div class="toggle-track" id="toggleTrack">
+              <div class="toggle-pill" id="togglePill"></div>
+              <button class="toggle-btn active" data-state="sunny">
+                <span class="btn-icon">🌤️</span>
+                <span class="btn-label">Sunny</span>
+              </button>
+              <button class="toggle-btn" data-state="cloudy">
+                <span class="btn-icon">🌥️</span>
+                <span class="btn-label">Cloudy</span>
+              </button>
+              <button class="toggle-btn" data-state="rainy">
+                <span class="btn-icon">🌦️</span>
+                <span class="btn-label">Rainy</span>
+              </button>
+              <button class="toggle-btn" data-state="stormy">
+                <span class="btn-icon">⚡</span>
+                <span class="btn-label">Stormy</span>
+              </button>
+              <button class="toggle-btn" data-state="snowy">
+                <span class="btn-icon">🌨️</span>
+                <span class="btn-label">Snowy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- Home indicator -->
+      <div class="home-indicator"></div>
+
+    </div><!-- /device-frame -->
+
+    <script src="js/states.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/atmosphere.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
