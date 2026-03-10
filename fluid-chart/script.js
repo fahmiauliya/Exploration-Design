@@ -1,434 +1,302 @@
 /* ============================================================
    FLUID CHART — script.js
-   Chart logic, data, and interactions
    ============================================================ */
 
 'use strict';
 
-/* ─── CHART DATA ─────────────────────────────────────────────
-   Each time filter holds an array of normalized price points (0–1).
-   "base" is the reference USD price at the start of the period.
-   "current" is the current displayed price.
-   Prices are scaled from the normalized curve for display.
+/* ─── DATA ───────────────────────────────────────────────────
+   Each filter: normalized points (0–1), labels, change info, stats.
 ──────────────────────────────────────────────────────────────*/
 
-const BASE_PRICE = 4218.36;
-
-const TIME_DATASETS = {
+const DATA = {
   '1H': {
-    points: [
-      0.48, 0.50, 0.52, 0.49, 0.51, 0.54, 0.57, 0.55, 0.58,
-      0.60, 0.58, 0.61, 0.63, 0.65, 0.62, 0.64, 0.67, 0.70,
-      0.68, 0.72, 0.74, 0.71, 0.73, 0.76, 0.79, 0.77, 0.80, 0.82,
-    ],
-    labels: ['9:00','9:02','9:04','9:06','9:08','9:10','9:12','9:14','9:16',
-             '9:18','9:20','9:22','9:24','9:26','9:28','9:30','9:32','9:34',
-             '9:36','9:38','9:40','9:42','9:44','9:46','9:48','9:50','9:52','9:54'],
-    changeAmt:  '+$24.18',
-    changePct:  '+0.58%',
-    positive:   true,
-    high:       '$4,240.10',
-    low:        '$4,194.20',
-    vol:        '$2.1B',
+    pts:  [0.46,0.49,0.51,0.50,0.53,0.56,0.54,0.58,0.60,
+           0.58,0.62,0.64,0.61,0.65,0.68,0.66,0.70,0.72,
+           0.70,0.74,0.76,0.73,0.77,0.80,0.78,0.82,0.84,0.86],
+    labs: ['9:00','9:02','9:04','9:06','9:08','9:10','9:12','9:14','9:16',
+           '9:18','9:20','9:22','9:24','9:26','9:28','9:30','9:32','9:34',
+           '9:36','9:38','9:40','9:42','9:44','9:46','9:48','9:50','9:52','9:54'],
+    change: '+$24.18', pct: '+0.58%', period: '1h', pos: true,
+    high: '$4,240.10', low: '$4,194.20', vol: '$2.1B',
+    balance: '4,218.36 USDC', balUsd: '$4,218.36', balChange: '+$24.18 today',
   },
   '1D': {
-    points: [
-      0.60, 0.55, 0.50, 0.48, 0.52, 0.58, 0.62, 0.55, 0.50,
-      0.45, 0.48, 0.52, 0.58, 0.65, 0.70, 0.72, 0.68, 0.71,
-      0.74, 0.78, 0.75, 0.72, 0.69, 0.72, 0.76, 0.80, 0.82, 0.84,
-    ],
-    labels: ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00',
-             '09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00',
-             '18:00','19:00','20:00','21:00','22:00','23:00','00:00','01:00','02:00','03:00'],
-    changeAmt:  '+$101.44',
-    changePct:  '+2.46%',
-    positive:   true,
-    high:       '$4,240.10',
-    low:        '$4,101.55',
-    vol:        '$18.4B',
+    pts:  [0.60,0.56,0.50,0.46,0.50,0.56,0.60,0.54,0.48,
+           0.44,0.48,0.52,0.58,0.65,0.70,0.72,0.68,0.72,
+           0.76,0.80,0.76,0.72,0.68,0.72,0.76,0.80,0.84,0.86],
+    labs: Array.from({length:28},(_,i)=>String(i).padStart(2,'0')+':00'),
+    change: '+$101.44', pct: '+2.46%', period: '24h', pos: true,
+    high: '$4,240.10', low: '$4,101.55', vol: '$18.4B',
+    balance: '4,218.36 USDC', balUsd: '$4,218.36', balChange: '+$101.44 today',
   },
   '1W': {
-    points: [
-      0.82, 0.78, 0.74, 0.70, 0.68, 0.65, 0.62, 0.58, 0.55,
-      0.52, 0.48, 0.50, 0.53, 0.57, 0.61, 0.64, 0.68, 0.72,
-      0.74, 0.71, 0.75, 0.78, 0.74, 0.77, 0.80, 0.76, 0.79, 0.82,
-    ],
-    labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun','Mon','Tue',
-             'Wed','Thu','Fri','Sat','Sun','Mon','Tue','Wed','Thu',
-             'Fri','Sat','Sun','Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-    changeAmt:  '-$198.22',
-    changePct:  '-4.49%',
-    positive:   false,
-    high:       '$4,420.55',
-    low:        '$3,980.14',
-    vol:        '$98.6B',
+    pts:  [0.84,0.80,0.76,0.70,0.66,0.62,0.58,0.54,0.50,
+           0.46,0.50,0.54,0.58,0.62,0.66,0.68,0.72,0.74,
+           0.70,0.74,0.78,0.74,0.78,0.80,0.76,0.80,0.82,0.80],
+    labs: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun','Mon','Tue',
+           'Wed','Thu','Fri','Sat','Sun','Mon','Tue','Wed','Thu',
+           'Fri','Sat','Sun','Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    change: '-$198.22', pct: '-4.49%', period: '7d', pos: false,
+    high: '$4,420.55', low: '$3,980.14', vol: '$98.6B',
+    balance: '4,218.36 USDC', balUsd: '$4,218.36', balChange: '-$198.22 today',
   },
   '1M': {
-    points: [
-      0.40, 0.38, 0.42, 0.45, 0.43, 0.40, 0.38, 0.42, 0.46,
-      0.50, 0.54, 0.52, 0.55, 0.58, 0.60, 0.57, 0.62, 0.66,
-      0.64, 0.68, 0.72, 0.70, 0.74, 0.78, 0.75, 0.79, 0.82, 0.80,
-    ],
-    labels: Array.from({length: 28}, (_, i) => `Day ${i + 1}`),
-    changeAmt:  '+$622.14',
-    changePct:  '+17.27%',
-    positive:   true,
-    high:       '$4,350.88',
-    low:        '$3,540.22',
-    vol:        '$412B',
+    pts:  [0.38,0.40,0.44,0.42,0.38,0.36,0.40,0.44,0.48,
+           0.52,0.56,0.54,0.58,0.62,0.64,0.60,0.64,0.68,
+           0.66,0.70,0.74,0.72,0.76,0.80,0.77,0.80,0.83,0.82],
+    labs: Array.from({length:28},(_,i)=>`Day ${i+1}`),
+    change: '+$622.14', pct: '+17.27%', period: '30d', pos: true,
+    high: '$4,350.88', low: '$3,540.22', vol: '$412B',
+    balance: '4,218.36 USDC', balUsd: '$4,218.36', balChange: '+$622.14 this month',
   },
   '1Y': {
-    points: [
-      0.20, 0.18, 0.22, 0.28, 0.32, 0.30, 0.26, 0.30, 0.36,
-      0.42, 0.48, 0.52, 0.58, 0.64, 0.60, 0.55, 0.62, 0.68,
-      0.74, 0.70, 0.66, 0.72, 0.76, 0.80, 0.77, 0.82, 0.85, 0.82,
-    ],
-    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep',
-             'Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun',
-             'Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'],
-    changeAmt:  '+$2,841.50',
-    changePct:  '+206.8%',
-    positive:   true,
-    high:       '$4,780.40',
-    low:        '$1,204.86',
-    vol:        '$5.2T',
+    pts:  [0.18,0.20,0.24,0.28,0.32,0.28,0.24,0.30,0.36,
+           0.42,0.48,0.54,0.60,0.66,0.62,0.56,0.62,0.70,
+           0.76,0.72,0.66,0.72,0.78,0.82,0.78,0.82,0.85,0.84],
+    labs: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep',
+           'Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun',
+           'Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'],
+    change: '+$2,841.50', pct: '+206.8%', period: '1y', pos: true,
+    high: '$4,780.40', low: '$1,204.86', vol: '$5.2T',
+    balance: '4,218.36 USDC', balUsd: '$4,218.36', balChange: '+$2,841.50 this year',
   },
 };
 
+/* Price range for hover display */
+const BASE  = 4218.36;
+const PMIN  = BASE * 0.70;
+const PMAX  = BASE * 1.10;
+
+function normToPrice(n) {
+  return PMIN + n * (PMAX - PMIN);
+}
+
 /* ─── STATE ──────────────────────────────────────────────── */
 
-let activeFilter = '1W';
-let isHovering   = false;
+let active    = '1D';
+let hovering  = false;
 
-/* ─── DOM REFS ───────────────────────────────────────────── */
+/* ─── DOM ────────────────────────────────────────────────── */
 
 const chartSvg    = document.getElementById('chartSvg');
 const chartArea   = document.getElementById('chartArea');
 const chartLine   = document.getElementById('chartLine');
 const hoverLine   = document.getElementById('hoverLine');
 const hoverDot    = document.getElementById('hoverDot');
-const hoverTip    = document.getElementById('hoverTooltip');
-const tipPrice    = document.getElementById('tooltipPrice');
-const tipTime     = document.getElementById('tooltipTime');
+const chartTooltip= document.getElementById('chartTooltip');
+const ttPrice     = document.getElementById('ttPrice');
+const ttTime      = document.getElementById('ttTime');
+const chartWrap   = document.getElementById('chartWrap');
+const deviceFrame = document.querySelector('.device-frame');
+
 const priceMain   = document.getElementById('priceMain');
-const priceChangeBadge = document.getElementById('priceChangeBadge');
-const priceChangePct   = document.getElementById('priceChangePct');
-const navChange        = document.getElementById('navChange');
+const changeBadge = document.getElementById('changeBadge');
+const changePct   = document.getElementById('changePct');
+
 const statHigh    = document.getElementById('statHigh');
 const statLow     = document.getElementById('statLow');
 const statVol     = document.getElementById('statVol');
-const balanceUsdChange = document.getElementById('balanceChange');
-const tfBtns      = document.querySelectorAll('.tf-btn');
-const chartWrap   = document.querySelector('.chart-wrap');
-const deviceFrame = document.querySelector('.device-frame');
 
-/* ─── SVG DIMENSIONS ─────────────────────────────────────── */
+const balanceAmount = document.getElementById('balanceAmount');
+const balanceUsd    = document.getElementById('balanceUsd');
+const balanceChange = document.getElementById('balanceChange');
 
-const VW = 360;
-const VH = 180;
+const tfBtns = document.querySelectorAll('.tf-btn');
 
-/* ─── PRICE SCALING ──────────────────────────────────────── */
-
-/**
- * Map a normalized 0–1 value to a price in the chart's range.
- * The chart's y range is roughly ±30% of BASE_PRICE.
- */
-function normToPrice(n) {
-  const min = BASE_PRICE * 0.7;
-  const max = BASE_PRICE * 1.1;
-  return min + n * (max - min);
-}
+/* SVG viewBox dimensions */
+const VW = 375;
+const VH = 300;
 
 /* ─── PATH BUILDER ───────────────────────────────────────── */
 
-/**
- * Build smooth cubic bezier paths from normalized points array.
- * Returns { linePath, areaPath, points (SVG coordinates) }
- */
 function buildPaths(pts) {
   const n    = pts.length;
   const step = VW / (n - 1);
 
-  // SVG points: y = VH - (val * VH) — higher value = higher on screen
-  const svgPts = pts.map((v, i) => ({
+  const coords = pts.map((v, i) => ({
     x: i * step,
-    y: VH - v * (VH * 0.85) - VH * 0.05, // 5% padding top/bottom
+    y: VH - v * (VH * 0.88) - VH * 0.04,
   }));
 
-  // Build smooth cubic bezier line
-  let d = `M ${svgPts[0].x.toFixed(2)} ${svgPts[0].y.toFixed(2)}`;
-  for (let i = 0; i < svgPts.length - 1; i++) {
-    const p0 = svgPts[i];
-    const p1 = svgPts[i + 1];
-    const cx = (p0.x + p1.x) / 2;
-    d += ` C ${cx.toFixed(2)} ${p0.y.toFixed(2)}, ${cx.toFixed(2)} ${p1.y.toFixed(2)}, ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`;
+  let d = `M ${coords[0].x.toFixed(1)} ${coords[0].y.toFixed(1)}`;
+  for (let i = 0; i < coords.length - 1; i++) {
+    const a = coords[i], b = coords[i + 1];
+    const cx = (a.x + b.x) / 2;
+    d += ` C ${cx.toFixed(1)} ${a.y.toFixed(1)}, ${cx.toFixed(1)} ${b.y.toFixed(1)}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
   }
 
-  const linePath = d;
-  const last     = svgPts[n - 1];
-  const first    = svgPts[0];
-  const areaPath = `${d} L ${last.x.toFixed(2)} ${VH} L ${first.x.toFixed(2)} ${VH} Z`;
+  const last  = coords[n - 1];
+  const first = coords[0];
+  const area  = `${d} L ${last.x.toFixed(1)} ${VH} L ${first.x.toFixed(1)} ${VH} Z`;
 
-  return { linePath, areaPath, svgPts };
+  return { line: d, area, coords };
 }
 
-/* ─── CHART COLOR ────────────────────────────────────────── */
+/* ─── GRADIENT COLORS ────────────────────────────────────── */
 
-const GREEN = '#10d080';
-const RED   = '#f04d4d';
+const GRAD = {
+  pos: { stroke: '#22c55e', stops: ['rgba(34,197,94,0.22)','rgba(34,197,94,0.06)','rgba(34,197,94,0)'] },
+  neg: { stroke: '#ef4444', stops: ['rgba(239,68,68,0.18)','rgba(239,68,68,0.05)','rgba(239,68,68,0)'] },
+};
 
-const GRAD_STOPS_GREEN = [
-  { offset: '0%',   color: '#10d080', opacity: '0.25' },
-  { offset: '80%',  color: '#10d080', opacity: '0.04' },
-  { offset: '100%', color: '#10d080', opacity: '0'    },
-];
-const GRAD_STOPS_BLUE = [
-  { offset: '0%',   color: '#3B82F6', opacity: '0.28' },
-  { offset: '80%',  color: '#3B82F6', opacity: '0.04' },
-  { offset: '100%', color: '#3B82F6', opacity: '0'    },
-];
-const GRAD_STOPS_RED = [
-  { offset: '0%',   color: '#f04d4d', opacity: '0.22' },
-  { offset: '80%',  color: '#f04d4d', opacity: '0.03' },
-  { offset: '100%', color: '#f04d4d', opacity: '0'    },
-];
-
-function setGradient(stops) {
-  const grad = chartSvg.getElementById('chartGrad') ||
-               document.getElementById('chartGrad');
-  if (!grad) return;
-  const existingStops = grad.querySelectorAll('stop');
-  stops.forEach((s, i) => {
-    if (existingStops[i]) {
-      existingStops[i].setAttribute('stop-color', s.color);
-      existingStops[i].setAttribute('stop-opacity', s.opacity);
-      existingStops[i].setAttribute('offset', s.offset);
-    }
-  });
+function applyGradient(pos) {
+  const g    = pos ? GRAD.pos : GRAD.neg;
+  const s0   = document.getElementById('gradStop0');
+  const s1   = document.getElementById('gradStop1');
+  const s2   = document.getElementById('gradStop2');
+  if (s0) s0.setAttribute('stop-color', g.stops[0]);
+  if (s1) s1.setAttribute('stop-color', g.stops[1]);
+  if (s2) s2.setAttribute('stop-color', g.stops[2]);
+  chartLine.setAttribute('stroke', g.stroke);
+  hoverDot.setAttribute('fill', g.stroke);
 }
 
-/* ─── RENDER CHART ───────────────────────────────────────── */
+/* ─── RENDER ─────────────────────────────────────────────── */
 
 function renderChart(filter) {
-  const data = TIME_DATASETS[filter];
-  if (!data) return;
+  const d = DATA[filter];
+  if (!d) return;
 
-  const { linePath, areaPath, svgPts } = buildPaths(data.points);
+  const { line, area, coords } = buildPaths(d.pts);
 
-  // Update SVG paths (CSS transition animates the d attribute)
-  chartLine.setAttribute('d', linePath);
-  chartArea.setAttribute('d', areaPath);
+  chartLine.setAttribute('d', line);
+  chartArea.setAttribute('d', area);
+  applyGradient(d.pos);
 
-  // Update colors based on positive/negative
-  const color = data.positive ? GREEN : RED;
-  const stops = data.positive ? GRAD_STOPS_GREEN : GRAD_STOPS_RED;
+  /* Cache for hover */
+  chartSvg._coords = coords;
+  chartSvg._data   = d;
 
-  chartLine.setAttribute('stroke', color);
-  hoverDot.setAttribute('fill', color);
-  setGradient(stops);
+  /* Change badge */
+  const posClass = d.pos ? 'positive' : 'negative';
+  const icon = d.pos
+    ? `<svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M4.5 1.5L7.5 6H1.5L4.5 1.5Z" fill="currentColor"/></svg>`
+    : `<svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M4.5 7.5L1.5 3H7.5L4.5 7.5Z" fill="currentColor"/></svg>`;
 
-  // Cache svg points for hover
-  chartSvg._pts    = svgPts;
-  chartSvg._data   = data;
-  chartSvg._filter = filter;
+  changeBadge.innerHTML = icon + ' ' + d.change;
+  changeBadge.className = `change-badge ${posClass}`;
+  changePct.textContent = `${d.pct} ${d.period}`;
+  changePct.className   = `change-pct ${posClass}`;
 
-  // Update price change UI
-  const posClass = data.positive ? 'positive' : 'negative';
+  /* Stats */
+  statHigh.textContent = d.high;
+  statLow.textContent  = d.low;
+  statVol.textContent  = d.vol;
 
-  priceChangeBadge.textContent = '';
-  // Rebuild badge with arrow icon
-  const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  arrowSvg.setAttribute('width', '10');
-  arrowSvg.setAttribute('height', '10');
-  arrowSvg.setAttribute('viewBox', '0 0 10 10');
-  arrowSvg.setAttribute('fill', 'none');
-  const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  arrowPath.setAttribute('d', data.positive ? 'M5 2L8 6H2L5 2Z' : 'M5 8L8 4H2L5 8Z');
-  arrowPath.setAttribute('fill', 'currentColor');
-  arrowSvg.appendChild(arrowPath);
-  priceChangeBadge.appendChild(arrowSvg);
-  priceChangeBadge.appendChild(document.createTextNode(' ' + data.changeAmt));
-
-  priceChangeBadge.className = 'price-change-badge ' + posClass;
-  priceChangePct.textContent = data.changePct + ' ';
-  priceChangePct.appendChild(document.createTextNode(filter === '1H' ? '1h' : filter === '1D' ? '24h' : filter === '1W' ? '7d' : filter === '1M' ? '30d' : '1y'));
-  priceChangePct.className   = 'price-change-pct ' + posClass;
-
-  navChange.textContent  = data.changePct;
-  navChange.className    = 'meta-change ' + posClass;
-
-  balanceUsdChange.textContent = data.changeAmt + ' today';
-  balanceUsdChange.className   = 'balance-usd-change ' + posClass;
-
-  // Stats
-  statHigh.textContent = data.high;
-  statLow.textContent  = data.low;
-  statVol.textContent  = data.vol;
+  /* Balance */
+  balanceAmount.textContent = d.balance;
+  balanceUsd.textContent    = d.balUsd;
+  balanceChange.textContent = d.balChange;
+  balanceChange.className   = `balance-change ${posClass}`;
 }
 
-/* ─── HOVER INTERACTION ──────────────────────────────────── */
+/* ─── HOVER ──────────────────────────────────────────────── */
 
-function getRelativePos(e) {
+function getXY(e) {
   const rect = chartWrap.getBoundingClientRect();
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  return {
-    x: clientX - rect.left,
-    y: clientY - rect.top,
-    w: rect.width,
-    h: rect.height,
-  };
+  const cx   = e.touches ? e.touches[0].clientX : e.clientX;
+  return { x: cx - rect.left, w: rect.width, h: rect.height };
 }
 
-function onChartEnter(e) {
-  isHovering = true;
+function onEnter(e) {
+  hovering = true;
   hoverLine.setAttribute('opacity', '1');
   hoverDot.setAttribute('opacity', '1');
-  hoverTip.classList.add('visible');
-  onChartMove(e);
+  chartTooltip.classList.add('visible');
+  onMove(e);
 }
 
-function onChartMove(e) {
-  if (!isHovering || !chartSvg._pts) return;
+function onMove(e) {
+  if (!hovering || !chartSvg._coords) return;
 
-  const { x, w } = getRelativePos(e);
-  const pts  = chartSvg._pts;
-  const data = chartSvg._data;
-  const n    = pts.length;
+  const { x, w, h } = getXY(e);
+  const coords = chartSvg._coords;
+  const d      = chartSvg._data;
+  const n      = coords.length;
+  const svgX   = (x / w) * VW;
+  const step   = VW / (n - 1);
 
-  // Map pixel x → SVG x
-  const svgX = (x / w) * VW;
-  const step = VW / (n - 1);
-  let idx    = Math.round(svgX / step);
-  idx        = Math.max(0, Math.min(n - 1, idx));
+  let idx = Math.max(0, Math.min(n - 1, Math.round(svgX / step)));
+  const pt = coords[idx];
 
-  const pt = pts[idx];
-
-  // Position elements in SVG coordinates (attributes)
   hoverLine.setAttribute('x1', pt.x);
   hoverLine.setAttribute('x2', pt.x);
   hoverDot.setAttribute('cx', pt.x);
   hoverDot.setAttribute('cy', pt.y);
 
-  // Tooltip: position in pixel space relative to chart-wrap
-  const tipX = (pt.x / VW) * w;
-  const tipY = (pt.y / VH) * chartWrap.getBoundingClientRect().height;
+  /* Tooltip position */
+  const pixX = (pt.x / VW) * w;
+  const pixY = (pt.y / VH) * h;
 
-  hoverTip.style.left      = `${tipX}px`;
-  hoverTip.style.top       = `${Math.max(tipY - 54, 6)}px`;
-  hoverTip.style.transform = 'translateX(-50%)';
+  chartTooltip.style.left      = `${pixX}px`;
+  chartTooltip.style.top       = `${Math.max(pixY - 54, 6)}px`;
+  chartTooltip.style.transform = 'translateX(-50%)';
 
-  // Price at this point
-  const priceAtPoint = normToPrice(data.points[idx]);
-  tipPrice.textContent = '$' + priceAtPoint.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-  tipTime.textContent  = data.labels[idx] || '';
+  const price = normToPrice(d.pts[idx]);
+  ttPrice.textContent = '$' + price.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  ttTime.textContent  = d.labs[idx] || '';
 
-  // Update big price display while hovering
-  priceMain.textContent = tipPrice.textContent;
+  /* Live price update while hovering */
+  priceMain.textContent = ttPrice.textContent;
 }
 
-function onChartLeave() {
-  isHovering = false;
+function onLeave() {
+  hovering = false;
   hoverLine.setAttribute('opacity', '0');
   hoverDot.setAttribute('opacity', '0');
-  hoverTip.classList.remove('visible');
-
-  // Restore current price
-  priceMain.textContent = '$' + BASE_PRICE.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  chartTooltip.classList.remove('visible');
+  priceMain.textContent = '$' + BASE.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 }
 
-/* ─── TIME FILTER SWITCHING ──────────────────────────────── */
+/* ─── TIME FILTER SWITCH ─────────────────────────────────── */
 
-function switchFilter(filter) {
-  if (filter === activeFilter) return;
-  activeFilter = filter;
-
-  // Update tab styles
-  tfBtns.forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tf === filter);
-  });
-
-  renderChart(filter);
+function switchFilter(f) {
+  if (f === active) return;
+  active = f;
+  tfBtns.forEach(b => b.classList.toggle('active', b.dataset.tf === f));
+  renderChart(f);
 }
 
-/* ─── EVENT BINDINGS ─────────────────────────────────────── */
+/* ─── AUTO CYCLE ─────────────────────────────────────────── */
 
-// Time filter buttons
-tfBtns.forEach(btn => {
-  btn.addEventListener('click', () => switchFilter(btn.dataset.tf));
-});
-
-// Chart hover (mouse)
-chartWrap.addEventListener('mouseenter', onChartEnter);
-chartWrap.addEventListener('mousemove',  onChartMove);
-chartWrap.addEventListener('mouseleave', onChartLeave);
-
-// Chart hover (touch)
-chartWrap.addEventListener('touchstart', e => {
-  e.preventDefault();
-  onChartEnter(e);
-}, { passive: false });
-
-chartWrap.addEventListener('touchmove', e => {
-  e.preventDefault();
-  onChartMove(e);
-}, { passive: false });
-
-chartWrap.addEventListener('touchend', onChartLeave);
-
-// Action button ripple feedback
-document.querySelectorAll('.action-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    btn.style.transform = 'scale(0.95)';
-    setTimeout(() => { btn.style.transform = ''; }, 180);
-  });
-});
-
-/* ─── AUTO CYCLE DEMO ────────────────────────────────────── */
-// Cycles through time filters to showcase the fluid animation
-
-const filterOrder = ['1H', '1D', '1W', '1M', '1Y'];
-let cycleIndex    = filterOrder.indexOf('1W');
-let cycleTimer    = null;
-let userTouched   = false;
+const ORDER = ['1H','1D','1W','1M','1Y'];
+let   cycleIdx = ORDER.indexOf('1D');
+let   cycleTimer;
+let   userActive = false;
 
 function startCycle() {
   cycleTimer = setInterval(() => {
-    if (userTouched) {
-      clearInterval(cycleTimer);
-      return;
-    }
-    cycleIndex = (cycleIndex + 1) % filterOrder.length;
-    const next = filterOrder[cycleIndex];
-
-    // Update active tab UI
-    tfBtns.forEach(b => b.classList.toggle('active', b.dataset.tf === next));
-    activeFilter = next;
-    renderChart(next);
+    if (userActive) { clearInterval(cycleTimer); return; }
+    cycleIdx = (cycleIdx + 1) % ORDER.length;
+    const f  = ORDER[cycleIdx];
+    tfBtns.forEach(b => b.classList.toggle('active', b.dataset.tf === f));
+    active = f;
+    renderChart(f);
   }, 2600);
 }
 
-// Stop auto-cycle on user interaction
+/* ─── EVENTS ─────────────────────────────────────────────── */
+
 tfBtns.forEach(btn => {
-  btn.addEventListener('click', () => { userTouched = true; });
+  btn.addEventListener('click', () => {
+    userActive = true;
+    switchFilter(btn.dataset.tf);
+  });
 });
-chartWrap.addEventListener('mouseenter', () => { userTouched = true; });
-chartWrap.addEventListener('touchstart',  () => { userTouched = true; }, { passive: true });
+
+chartWrap.addEventListener('mouseenter', onEnter);
+chartWrap.addEventListener('mousemove',  onMove);
+chartWrap.addEventListener('mouseleave', onLeave);
+
+chartWrap.addEventListener('touchstart', e => { e.preventDefault(); userActive = true; onEnter(e); }, { passive: false });
+chartWrap.addEventListener('touchmove',  e => { e.preventDefault(); onMove(e); },  { passive: false });
+chartWrap.addEventListener('touchend',   onLeave);
 
 /* ─── INIT ───────────────────────────────────────────────── */
 
 function init() {
-  // Initial render
-  renderChart(activeFilter);
-
-  // Start auto-cycle after 2s delay
-  setTimeout(startCycle, 2000);
+  renderChart(active);
+  setTimeout(startCycle, 2200);
 }
 
 init();
