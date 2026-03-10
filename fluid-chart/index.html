@@ -109,12 +109,20 @@
           <path id="chartArea" fill="url(#chartGrad)" clip-path="url(#chartClip)"/>
           <path id="chartLine" fill="none" stroke="#22c55e" stroke-width="2.2"
                 stroke-linecap="round" stroke-linejoin="round" clip-path="url(#chartClip)"/>
+          <!-- Current date marker -->
+          <line id="nowLine" x1="300" y1="0" x2="300" y2="300"
+                stroke="rgba(0,0,0,0.10)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
+          <circle id="nowDot" r="5" fill="#f97316" stroke="white"
+                  stroke-width="2.5" opacity="0"/>
           <!-- Hover elements -->
           <line id="hoverLine" x1="0" y1="0" x2="0" y2="300"
                 stroke="rgba(0,0,0,0.12)" stroke-width="1" stroke-dasharray="4 3" opacity="0"/>
           <circle id="hoverDot" r="4.5" fill="#22c55e" stroke="white"
                   stroke-width="2.5" opacity="0"/>
         </svg>
+
+        <!-- Now label -->
+        <div class="now-label" id="nowLabel">Today</div>
 
         <!-- Tooltip -->
         <div class="chart-tooltip" id="chartTooltip">

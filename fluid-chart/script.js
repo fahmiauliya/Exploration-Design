@@ -93,6 +93,10 @@ const priceMain   = document.getElementById('priceMain');
 const changeBadge = document.getElementById('changeBadge');
 const changePct   = document.getElementById('changePct');
 
+const nowLine     = document.getElementById('nowLine');
+const nowDot      = document.getElementById('nowDot');
+const nowLabel    = document.getElementById('nowLabel');
+
 const statHigh    = document.getElementById('statHigh');
 const statLow     = document.getElementById('statLow');
 const statVol     = document.getElementById('statVol');
@@ -109,6 +113,9 @@ const VH = 300;
 
 /* ─── PATH BUILDER ───────────────────────────────────────── */
 
+/* "Today" index — 80% through the data */
+const NOW_RATIO = 0.8;
+
 function buildPaths(pts) {
   const n    = pts.length;
   const step = VW / (n - 1);
@@ -118,18 +125,22 @@ function buildPaths(pts) {
     y: VH - v * (VH * 0.88) - VH * 0.04,
   }));
 
-  let d = `M ${coords[0].x.toFixed(1)} ${coords[0].y.toFixed(1)}`;
-  for (let i = 0; i < coords.length - 1; i++) {
-    const a = coords[i], b = coords[i + 1];
+  /* Only draw up to the "now" point */
+  const nowIdx  = Math.round((n - 1) * NOW_RATIO);
+  const visible = coords.slice(0, nowIdx + 1);
+
+  let d = `M ${visible[0].x.toFixed(1)} ${visible[0].y.toFixed(1)}`;
+  for (let i = 0; i < visible.length - 1; i++) {
+    const a = visible[i], b = visible[i + 1];
     const cx = (a.x + b.x) / 2;
     d += ` C ${cx.toFixed(1)} ${a.y.toFixed(1)}, ${cx.toFixed(1)} ${b.y.toFixed(1)}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
   }
 
-  const last  = coords[n - 1];
-  const first = coords[0];
+  const last  = visible[visible.length - 1];
+  const first = visible[0];
   const area  = `${d} L ${last.x.toFixed(1)} ${VH} L ${first.x.toFixed(1)} ${VH} Z`;
 
-  return { line: d, area, coords };
+  return { line: d, area, coords, nowIdx };
 }
 
 /* ─── GRADIENT COLORS ────────────────────────────────────── */
@@ -157,15 +168,34 @@ function renderChart(filter) {
   const d = DATA[filter];
   if (!d) return;
 
-  const { line, area, coords } = buildPaths(d.pts);
+  const { line, area, coords, nowIdx } = buildPaths(d.pts);
 
   chartLine.setAttribute('d', line);
   chartArea.setAttribute('d', area);
   applyGradient(d.pos);
 
-  /* Cache for hover */
-  chartSvg._coords = coords;
+  /* Cache for hover (only up to "now") */
+  chartSvg._coords = coords.slice(0, nowIdx + 1);
   chartSvg._data   = d;
+
+  /* Now marker */
+  const nowPt = coords[nowIdx];
+
+  nowLine.setAttribute('x1', nowPt.x);
+  nowLine.setAttribute('x2', nowPt.x);
+  nowLine.setAttribute('opacity', '1');
+  nowDot.setAttribute('cx', nowPt.x);
+  nowDot.setAttribute('cy', nowPt.y);
+  nowDot.setAttribute('opacity', '1');
+
+  /* Position "Today" label but keep hidden until hover */
+  const wrapRect = chartWrap.getBoundingClientRect();
+  const nowPixX  = (nowPt.x / VW) * wrapRect.width;
+  nowLabel.style.left = `${nowPixX}px`;
+  nowLabel.classList.remove('visible');
+
+  /* Cache nowIdx for hover detection */
+  chartSvg._nowIdx = nowIdx;
 
   /* Change badge */
   const posClass = d.pos ? 'positive' : 'negative';
@@ -173,21 +203,25 @@ function renderChart(filter) {
     ? `<svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M4.5 1.5L7.5 6H1.5L4.5 1.5Z" fill="currentColor"/></svg>`
     : `<svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M4.5 7.5L1.5 3H7.5L4.5 7.5Z" fill="currentColor"/></svg>`;
 
-  changeBadge.innerHTML = icon + ' ' + d.change;
+  changeBadge.innerHTML = icon + ' ';
   changeBadge.className = `change-badge ${posClass}`;
-  changePct.textContent = `${d.pct} ${d.period}`;
-  changePct.className   = `change-pct ${posClass}`;
+  const changeSpan = document.createElement('span');
+  changeBadge.appendChild(changeSpan);
+  animateScrollNumber(changeSpan, d.change, 400);
 
-  /* Stats */
-  statHigh.textContent = d.high;
-  statLow.textContent  = d.low;
-  statVol.textContent  = d.vol;
+  changePct.className = `change-pct ${posClass}`;
+  animateScrollNumber(changePct, `${d.pct} ${d.period}`, 400);
 
-  /* Balance */
-  balanceAmount.textContent = d.balance;
-  balanceUsd.textContent    = d.balUsd;
-  balanceChange.textContent = d.balChange;
-  balanceChange.className   = `balance-change ${posClass}`;
+  /* Stats — scroll animation */
+  animateScrollNumber(statHigh, d.high, 400);
+  animateScrollNumber(statLow, d.low, 400);
+  animateScrollNumber(statVol, d.vol, 400);
+
+  /* Balance — scroll animation */
+  animateScrollNumber(balanceAmount, d.balance, 400);
+  animateScrollNumber(balanceUsd, d.balUsd, 400);
+  animateScrollNumber(balanceChange, d.balChange, 400);
+  balanceChange.className = `balance-change ${posClass}`;
 }
 
 /* ─── HOVER ──────────────────────────────────────────────── */
@@ -213,8 +247,9 @@ function onMove(e) {
   const coords = chartSvg._coords;
   const d      = chartSvg._data;
   const n      = coords.length;
+  if (n < 2) return;
   const svgX   = (x / w) * VW;
-  const step   = VW / (n - 1);
+  const step   = coords[1].x - coords[0].x;
 
   let idx = Math.max(0, Math.min(n - 1, Math.round(svgX / step)));
   const pt = coords[idx];
@@ -234,10 +269,14 @@ function onMove(e) {
 
   const price = normToPrice(d.pts[idx]);
   ttPrice.textContent = '$' + price.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-  ttTime.textContent  = d.labs[idx] || '';
+
+  /* Show "Today" when hovering at the now index */
+  const isAtNow = idx === chartSvg._nowIdx;
+  ttTime.textContent = isAtNow ? 'Today' : (d.labs[idx] || '');
+  nowLabel.classList.toggle('visible', isAtNow);
 
   /* Live price update while hovering */
-  priceMain.textContent = ttPrice.textContent;
+  setPriceText(ttPrice.textContent);
 }
 
 function onLeave() {
@@ -245,7 +284,9 @@ function onLeave() {
   hoverLine.setAttribute('opacity', '0');
   hoverDot.setAttribute('opacity', '0');
   chartTooltip.classList.remove('visible');
-  priceMain.textContent = '$' + BASE.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  nowLabel.classList.remove('visible');
+  const priceText = '$' + BASE.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  animateScrollNumber(priceMain, priceText, 350);
 }
 
 /* ─── TIME FILTER SWITCH ─────────────────────────────────── */
@@ -292,11 +333,63 @@ chartWrap.addEventListener('touchstart', e => { e.preventDefault(); userActive =
 chartWrap.addEventListener('touchmove',  e => { e.preventDefault(); onMove(e); },  { passive: false });
 chartWrap.addEventListener('touchend',   onLeave);
 
+/* ─── SCROLL NUMBER ANIMATION ────────────────────────────── */
+
+function animateScrollNumber(el, targetText, duration) {
+  const chars = targetText.split('');
+  el.innerHTML = '';
+
+  chars.forEach((ch, i) => {
+    if (/\d/.test(ch)) {
+      const digit   = parseInt(ch, 10);
+      const wrapper = document.createElement('span');
+      wrapper.className = 'scroll-digit';
+
+      const inner = document.createElement('span');
+      inner.className = 'scroll-digit-inner';
+
+      /* Build column: 0–9 then target digit on top */
+      for (let n = 0; n <= 9; n++) {
+        const s = document.createElement('span');
+        s.textContent = String(n);
+        inner.appendChild(s);
+      }
+
+      /* Start at random offset for stagger effect */
+      const startDigit = Math.floor(Math.random() * 10);
+      inner.style.transform = `translateY(-${startDigit}em)`;
+      wrapper.appendChild(inner);
+      el.appendChild(wrapper);
+
+      /* Animate to target digit */
+      const delay = 80 + i * 50;
+      setTimeout(() => {
+        inner.style.transitionDuration = `${duration + i * 60}ms`;
+        inner.style.transform = `translateY(-${digit}em)`;
+      }, delay);
+    } else {
+      const span = document.createElement('span');
+      span.className = 'scroll-static';
+      span.textContent = ch;
+      el.appendChild(span);
+    }
+  });
+}
+
+function setPriceText(text) {
+  priceMain.textContent = text;
+}
+
 /* ─── INIT ───────────────────────────────────────────────── */
 
 function init() {
   renderChart(active);
-  setTimeout(startCycle, 2200);
+
+  /* Scroll-in animation for the price on load */
+  const priceText = '$' + BASE.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  setTimeout(() => animateScrollNumber(priceMain, priceText, 500), 200);
+
+  setTimeout(startCycle, 2600);
 }
 
 init();
