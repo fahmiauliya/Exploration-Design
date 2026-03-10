@@ -1,0 +1,616 @@
+/* ============================================================
+   FLUID CHART — style.css
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:           #fafafa;
+  --surface:      #ffffff;
+  --border:       #eaeaea;
+  --border-soft:  #f0f0f0;
+  --text-primary: #111111;
+  --text-muted:   #5c5c5c;
+  --text-faint:   #adadad;
+
+  --indigo:       #6366f1;
+  --indigo-soft:  rgba(99, 102, 241, 0.1);
+  --pink:         #ec4899;
+  --pink-soft:    rgba(236, 72, 153, 0.1);
+  --green:        #10b981;
+  --green-soft:   rgba(16, 185, 129, 0.1);
+
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --radius-card: 20px;
+  --radius-btn:  100px;
+  --transition:  0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ─── NAV ─────────────────────────────────────────────────── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 250, 250, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: 1088px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.nav-logo svg { color: var(--indigo); }
+
+/* Plan tabs */
+.plan-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--border-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
+  padding: 4px;
+  margin-left: auto;
+}
+
+.plan-tab {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: var(--radius-btn);
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.plan-tab:hover { color: var(--text-primary); }
+
+.plan-tab.active {
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Billing toggle */
+.billing-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.toggle-btn {
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-faint);
+  background: none;
+  border: none;
+  border-radius: var(--radius-btn);
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.toggle-btn.active {
+  color: var(--text-primary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.save-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--green);
+  background: var(--green-soft);
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+
+/* ─── HERO ────────────────────────────────────────────────── */
+.hero {
+  max-width: 1088px;
+  margin: 0 auto;
+  padding: 80px 32px 48px;
+}
+
+.hero-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.08;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.hero-sub {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+/* ─── CHART SECTION ───────────────────────────────────────── */
+.chart-section {
+  max-width: 1088px;
+  margin: 0 auto;
+  padding: 0 32px 64px;
+}
+
+.chart-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  height: 320px;
+  transition: height 0.4s ease;
+}
+
+/* Y-axis */
+.y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 12px 36px 20px;
+  flex-shrink: 0;
+  width: 56px;
+}
+
+.y-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-faint);
+  letter-spacing: 0;
+  line-height: 1;
+  text-align: right;
+}
+
+/* Chart canvas area */
+.chart-canvas-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chart-svg {
+  flex: 1;
+  width: 100%;
+  display: block;
+  padding-top: 16px;
+  padding-right: 16px;
+}
+
+/* Animated paths */
+.chart-area {
+  transition: d 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              fill 0.5s ease;
+}
+
+.chart-line {
+  transition: d 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              stroke 0.5s ease;
+}
+
+.chart-dot {
+  transition: cx 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              cy 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              fill 0.5s ease;
+}
+
+/* X-axis */
+.x-axis {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px 0 0;
+  height: 36px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.x-axis span {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-faint);
+  text-align: center;
+  flex: 1;
+}
+
+/* Tooltip */
+.chart-tooltip {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-primary);
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, left 0.3s ease, top 0.3s ease;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.chart-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--text-primary);
+}
+
+.tooltip-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+.tooltip-label {
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.6);
+}
+
+/* Chart Meta */
+.chart-meta {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 0;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.meta-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 20px 16px;
+}
+
+.meta-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+}
+
+.meta-value {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  color: var(--text-primary);
+  transition: color 0.4s ease;
+}
+
+.meta-peak { color: var(--indigo); }
+
+.meta-label {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+/* ─── CARDS SECTION ───────────────────────────────────────── */
+.cards-section {
+  max-width: 1088px;
+  margin: 0 auto;
+  padding: 0 32px 120px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.price-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.4s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.price-card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.price-card--featured {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 1px var(--pink);
+}
+
+.price-card--featured:hover {
+  box-shadow: 0 8px 40px rgba(236, 72, 153, 0.18), 0 0 0 1px var(--pink);
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon--individual { background: var(--indigo-soft); color: var(--indigo); }
+.card-icon--family     { background: var(--pink-soft);   color: var(--pink); }
+.card-icon--enterprise { background: var(--green-soft);  color: var(--green); }
+
+.card-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  background: var(--border-soft);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px 10px;
+}
+
+.card-badge--featured {
+  color: var(--pink);
+  background: var(--pink-soft);
+  border-color: rgba(236, 72, 153, 0.2);
+}
+
+.card-plan {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.card-desc {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+
+.card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.price-curr {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  color: var(--text-primary);
+  transition: all 0.4s ease;
+  display: inline-block;
+}
+
+.price-per {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+.card-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  flex: 1;
+}
+
+.card-features li {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-features li::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--border-soft);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 5l2 2 4-4' stroke='%23adadad' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px;
+}
+
+.price-card--featured .card-features li::before {
+  background-color: var(--pink-soft);
+  border-color: rgba(236, 72, 153, 0.2);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 5l2 2 4-4' stroke='%23ec4899' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+}
+
+.card-btn {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  border-radius: var(--radius-btn);
+  padding: 13px 24px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.card-btn--outline {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text-primary);
+}
+
+.card-btn--outline:hover {
+  background: var(--border-soft);
+}
+
+.card-btn--primary {
+  background: var(--pink);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(236, 72, 153, 0.3);
+}
+
+.card-btn--primary:hover {
+  background: #db2777;
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ─── ACTIVE PLAN HIGHLIGHT ───────────────────────────────── */
+.price-card.is-active-plan {
+  outline: 2px solid var(--indigo);
+  outline-offset: -2px;
+}
+.price-card[data-plan="family"].is-active-plan {
+  outline-color: var(--pink);
+}
+.price-card[data-plan="enterprise"].is-active-plan {
+  outline-color: var(--green);
+}
+
+/* ─── PRICE FLIP ANIMATION ────────────────────────────────── */
+.price-curr.flip-out {
+  transform: translateY(-10px);
+  opacity: 0;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.price-curr.flip-in {
+  transform: translateY(10px);
+  opacity: 0;
+  transition: none;
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 1199px) {
+  .chart-container { height: 240px; }
+
+  .nav-inner { padding: 0 24px; }
+  .hero { padding: 60px 24px 40px; }
+  .chart-section { padding: 0 24px 48px; }
+  .cards-section { padding: 0 24px 80px; }
+
+  .chart-svg { height: 240px; }
+}
+
+@media (max-width: 900px) {
+  .cards-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
+  .price-card--featured { order: -1; }
+  .billing-toggle { display: none; }
+}
+
+@media (max-width: 640px) {
+  .chart-container { height: 180px; }
+  .nav-inner { padding: 0 16px; gap: 12px; }
+  .plan-tabs { gap: 2px; }
+  .plan-tab { padding: 5px 10px; font-size: 12px; }
+  .hero { padding: 40px 16px 32px; }
+  .hero-title { font-size: 32px; }
+  .chart-section { padding: 0 16px 40px; }
+  .cards-section { padding: 0 16px 60px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .meta-stat { padding: 14px 8px; }
+  .meta-value { font-size: 18px; }
+  .y-axis { width: 44px; padding-left: 12px; }
+}
+
+/* ─── SVG path transition polyfill hint ──────────────────── */
+@supports not (d: path("")) {
+  .chart-area, .chart-line { transition: none; }
+}

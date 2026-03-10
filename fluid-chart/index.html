@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fluid Chart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+
+    <!-- Sticky Nav -->
+    <nav class="nav">
+      <div class="nav-inner">
+        <div class="nav-logo">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <rect x="0" y="10" width="4" height="8" rx="1" fill="currentColor"/>
+            <rect x="7" y="5" width="4" height="13" rx="1" fill="currentColor"/>
+            <rect x="14" y="0" width="4" height="18" rx="1" fill="currentColor"/>
+          </svg>
+          <span>FluidChart</span>
+        </div>
+        <div class="plan-tabs" id="planTabs">
+          <button class="plan-tab active" data-plan="individual">Individual</button>
+          <button class="plan-tab" data-plan="family">Family</button>
+          <button class="plan-tab" data-plan="enterprise">Enterprise</button>
+        </div>
+        <div class="billing-toggle">
+          <button class="toggle-btn active" id="toggleMonthly">Monthly</button>
+          <button class="toggle-btn" id="toggleYearly">Yearly <span class="save-badge">-20%</span></button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <p class="hero-label">Pricing</p>
+      <h1 class="hero-title">Simple, transparent<br>pricing that grows<br>with you.</h1>
+      <p class="hero-sub">Choose the plan that fits your needs. Upgrade or downgrade at any time.</p>
+    </section>
+
+    <!-- Chart Section -->
+    <section class="chart-section">
+      <div class="chart-container" id="chartContainer">
+
+        <!-- Y-axis labels -->
+        <div class="y-axis" id="yAxis">
+          <span class="y-label">$200</span>
+          <span class="y-label">$150</span>
+          <span class="y-label">$100</span>
+          <span class="y-label">$50</span>
+          <span class="y-label">$0</span>
+        </div>
+
+        <!-- SVG Chart -->
+        <div class="chart-canvas-wrap">
+          <svg class="chart-svg" id="chartSvg" viewBox="0 0 1000 320" preserveAspectRatio="none">
+            <defs>
+              <!-- Gradient fills per plan -->
+              <linearGradient id="gradIndividual" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="gradFamily" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ec4899" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#ec4899" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="gradEnterprise" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+              </linearGradient>
+
+              <!-- Subtle grid line -->
+              <line id="gridDef" x1="0" y1="0" x2="1000" y2="0" stroke="#eaeaea" stroke-width="1"/>
+            </defs>
+
+            <!-- Grid lines -->
+            <g class="grid-lines">
+              <line x1="0" y1="0"   x2="1000" y2="0"   stroke="#eaeaea" stroke-width="1"/>
+              <line x1="0" y1="80"  x2="1000" y2="80"  stroke="#eaeaea" stroke-width="1"/>
+              <line x1="0" y1="160" x2="1000" y2="160" stroke="#eaeaea" stroke-width="1"/>
+              <line x1="0" y1="240" x2="1000" y2="240" stroke="#eaeaea" stroke-width="1"/>
+              <line x1="0" y1="320" x2="1000" y2="320" stroke="#eaeaea" stroke-width="1"/>
+            </g>
+
+            <!-- Area fill (animates) -->
+            <path class="chart-area" id="chartArea" d="" fill="url(#gradIndividual)"/>
+
+            <!-- Line stroke (animates) -->
+            <path class="chart-line" id="chartLine" d="" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Dot tooltip marker -->
+            <circle class="chart-dot" id="chartDot" r="5" fill="#6366f1" stroke="#fff" stroke-width="2.5" opacity="0"/>
+          </svg>
+
+          <!-- Tooltip -->
+          <div class="chart-tooltip" id="chartTooltip">
+            <span class="tooltip-value" id="tooltipValue">$99</span>
+            <span class="tooltip-label" id="tooltipLabel">Aug</span>
+          </div>
+
+          <!-- X-axis labels -->
+          <div class="x-axis" id="xAxis">
+            <span>Jan</span><span>Feb</span><span>Mar</span>
+            <span>Apr</span><span>May</span><span>Jun</span>
+            <span>Jul</span><span>Aug</span><span>Sep</span>
+            <span>Oct</span><span>Nov</span><span>Dec</span>
+          </div>
+        </div>
+
+      </div><!-- /.chart-container -->
+
+      <!-- Chart Meta -->
+      <div class="chart-meta" id="chartMeta">
+        <div class="meta-stat">
+          <span class="meta-value" id="metaAvg">$99</span>
+          <span class="meta-label">avg / month</span>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-stat">
+          <span class="meta-value" id="metaTotal">$1,188</span>
+          <span class="meta-label">total / year</span>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-stat">
+          <span class="meta-value meta-peak" id="metaPeak">$179</span>
+          <span class="meta-label">peak month</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Pricing Cards -->
+    <section class="cards-section">
+      <div class="cards-grid" id="cardsGrid">
+
+        <!-- Individual -->
+        <article class="price-card" data-plan="individual">
+          <div class="card-top">
+            <div class="card-icon card-icon--individual">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M3 18c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="card-badge">Starter</div>
+          </div>
+          <h2 class="card-plan">Individual</h2>
+          <p class="card-desc">Everything you need to get started — for one person.</p>
+          <div class="card-price">
+            <span class="price-curr" id="priceIndividual">$9</span>
+            <span class="price-per">/mo</span>
+          </div>
+          <ul class="card-features">
+            <li>5 projects</li>
+            <li>10 GB storage</li>
+            <li>Email support</li>
+            <li>Analytics dashboard</li>
+          </ul>
+          <button class="card-btn card-btn--outline">Get started</button>
+        </article>
+
+        <!-- Family -->
+        <article class="price-card price-card--featured" data-plan="family">
+          <div class="card-top">
+            <div class="card-icon card-icon--family">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="7" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="14" cy="6" r="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M1 17c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M14 11c1.657 0 3 1.343 3 3v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="card-badge card-badge--featured">Most popular</div>
+          </div>
+          <h2 class="card-plan">Family</h2>
+          <p class="card-desc">Share with up to 6 members. Perfect for households.</p>
+          <div class="card-price">
+            <span class="price-curr" id="priceFamily">$15</span>
+            <span class="price-per">/mo</span>
+          </div>
+          <ul class="card-features">
+            <li>Unlimited projects</li>
+            <li>100 GB shared storage</li>
+            <li>Priority support</li>
+            <li>Advanced analytics</li>
+            <li>Family dashboard</li>
+          </ul>
+          <button class="card-btn card-btn--primary">Get started</button>
+        </article>
+
+        <!-- Enterprise -->
+        <article class="price-card" data-plan="enterprise">
+          <div class="card-top">
+            <div class="card-icon card-icon--enterprise">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="2" y="10" width="16" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M6 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="card-badge">Scale</div>
+          </div>
+          <h2 class="card-plan">Enterprise</h2>
+          <p class="card-desc">For large teams that need control, compliance, and custom SLA.</p>
+          <div class="card-price">
+            <span class="price-curr" id="priceEnterprise">$49</span>
+            <span class="price-per">/mo</span>
+          </div>
+          <ul class="card-features">
+            <li>Unlimited everything</li>
+            <li>1 TB storage</li>
+            <li>24/7 dedicated support</li>
+            <li>SSO & SAML</li>
+            <li>Custom integrations</li>
+            <li>SLA guarantee</li>
+          </ul>
+          <button class="card-btn card-btn--outline">Contact sales</button>
+        </article>
+
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>
