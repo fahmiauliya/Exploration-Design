@@ -1,0 +1,658 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #000000;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --text: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.5);
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+/* ========================================
+   PAGE SYSTEM
+   ======================================== */
+.page {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ========================================
+   GLASSMORPHISM BUTTON
+   ======================================== */
+.glass-btn {
+    width: 46px;
+    height: 46px;
+    border-radius: 100px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s ease, transform 0.2s ease;
+    box-shadow:
+        inset -1px -1px 1px -1px rgba(255, 255, 255, 0.2),
+        inset 1px 1px 1px -1px rgba(255, 255, 255, 0.2);
+}
+
+.glass-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.glass-btn:active {
+    transform: scale(0.95);
+}
+
+/* ========================================
+   HOME - NAV BAR
+   ======================================== */
+.nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 40px;
+    gap: 20px;
+}
+
+.nav-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.36px;
+    text-align: center;
+    flex: 1;
+    line-height: 1.2;
+}
+
+/* ========================================
+   HOME - CARDS AREA
+   ======================================== */
+.cards-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 440px;
+}
+
+.card-slot {
+    aspect-ratio: 1 / 0.95;
+    cursor: pointer;
+    position: relative;
+}
+
+/* ========================================
+   HOME - STICKER CARD (3-layer stack)
+   ======================================== */
+.sticker-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-slot:hover .sticker-card {
+    transform: scale(1.04);
+}
+
+.card-slot:active .sticker-card {
+    transform: scale(0.96);
+}
+
+/* Shared layer base */
+.sticker-layer {
+    position: absolute;
+    width: 80%;
+    height: 82%;
+    border-radius: 30%;
+}
+
+/* Back layer A — rotated, 30% opacity, breathing */
+.sticker-back-a {
+    opacity: 0.3;
+    transform: rotate(-60deg);
+    z-index: 1;
+    animation: breathe-a 6s ease-in-out infinite;
+}
+
+/* Back layer B — rotated, 30% opacity, breathing */
+.sticker-back-b {
+    opacity: 0.3;
+    transform: rotate(147deg);
+    z-index: 2;
+    animation: breathe-b 7s ease-in-out infinite;
+}
+
+/* Front layer — main color + gradient overlay, subtle breathe */
+.sticker-front {
+    z-index: 3;
+    width: 78%;
+    height: 80%;
+    animation: breathe-front 5s ease-in-out infinite;
+}
+
+/* Stagger each card so they don't sync */
+.card-slot:nth-child(1) .sticker-back-a { animation-delay: 0s; }
+.card-slot:nth-child(1) .sticker-back-b { animation-delay: -1.5s; }
+.card-slot:nth-child(1) .sticker-front  { animation-delay: -0.8s; }
+
+.card-slot:nth-child(2) .sticker-back-a { animation-delay: -2s; }
+.card-slot:nth-child(2) .sticker-back-b { animation-delay: -0.5s; }
+.card-slot:nth-child(2) .sticker-front  { animation-delay: -3s; }
+
+.card-slot:nth-child(3) .sticker-back-a { animation-delay: -3.5s; }
+.card-slot:nth-child(3) .sticker-back-b { animation-delay: -1s; }
+.card-slot:nth-child(3) .sticker-front  { animation-delay: -2.2s; }
+
+.card-slot:nth-child(4) .sticker-back-a { animation-delay: -1.2s; }
+.card-slot:nth-child(4) .sticker-back-b { animation-delay: -3.8s; }
+.card-slot:nth-child(4) .sticker-front  { animation-delay: -4.5s; }
+
+/* Back layer A: rotates RIGHT (clockwise drift) */
+@keyframes breathe-a {
+    0% {
+        transform: rotate(-60deg) scale(1);
+        border-radius: 30% 32% 28% 33%;
+    }
+    25% {
+        transform: rotate(-45deg) scale(1.03) translate(2px, -1px);
+        border-radius: 33% 28% 32% 29%;
+    }
+    50% {
+        transform: rotate(-35deg) scale(0.98) translate(-1px, 2px);
+        border-radius: 28% 34% 30% 31%;
+    }
+    75% {
+        transform: rotate(-48deg) scale(1.02) translate(1px, 1px);
+        border-radius: 31% 29% 34% 28%;
+    }
+    100% {
+        transform: rotate(-60deg) scale(1);
+        border-radius: 30% 32% 28% 33%;
+    }
+}
+
+/* Back layer B: rotates LEFT (counter-clockwise drift) */
+@keyframes breathe-b {
+    0% {
+        transform: rotate(147deg) scale(1);
+        border-radius: 32% 28% 34% 30%;
+    }
+    20% {
+        transform: rotate(130deg) scale(1.02) translate(-2px, 1px);
+        border-radius: 28% 33% 29% 34%;
+    }
+    50% {
+        transform: rotate(120deg) scale(0.97) translate(1px, -2px);
+        border-radius: 34% 30% 32% 27%;
+    }
+    75% {
+        transform: rotate(135deg) scale(1.04) translate(2px, 2px);
+        border-radius: 29% 31% 28% 35%;
+    }
+    100% {
+        transform: rotate(147deg) scale(1);
+        border-radius: 32% 28% 34% 30%;
+    }
+}
+
+/* Front layer: rotates RIGHT (subtle clockwise sway) */
+@keyframes breathe-front {
+    0% {
+        transform: scale(1) rotate(0deg);
+        border-radius: 30% 30% 30% 30%;
+    }
+    25% {
+        transform: scale(1.015) rotate(4deg) translate(0.5px, -0.5px);
+        border-radius: 31% 29% 32% 28%;
+    }
+    50% {
+        transform: scale(0.99) rotate(8deg) translate(-0.5px, 0.5px);
+        border-radius: 28% 32% 29% 31%;
+    }
+    75% {
+        transform: scale(1.01) rotate(3deg) translate(0.5px, 0px);
+        border-radius: 29% 31% 30% 30%;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        border-radius: 30% 30% 30% 30%;
+    }
+}
+
+/* Gradient overlay on all layers for depth */
+.sticker-layer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(100,100,100,0.1) 100%);
+    pointer-events: none;
+}
+
+/* ---- Physical (Red) ---- */
+.card-slot[data-category="physical"] .sticker-front {
+    background: #E72323;
+}
+.card-slot[data-category="physical"] .sticker-back-a,
+.card-slot[data-category="physical"] .sticker-back-b {
+    background: #E72323;
+}
+
+/* ---- Mental (Orange) ---- */
+.card-slot[data-category="mental"] .sticker-front {
+    background: #E78523;
+}
+.card-slot[data-category="mental"] .sticker-back-a,
+.card-slot[data-category="mental"] .sticker-back-b {
+    background: #E78523;
+}
+
+/* ---- Emotional (Yellow-Green) ---- */
+.card-slot[data-category="emotional"] .sticker-front {
+    background: #B5C44A;
+}
+.card-slot[data-category="emotional"] .sticker-back-a,
+.card-slot[data-category="emotional"] .sticker-back-b {
+    background: #B5C44A;
+}
+
+/* ---- Environmental (Blue) ---- */
+.card-slot[data-category="environmental"] .sticker-front {
+    background: #3CB8E8;
+}
+.card-slot[data-category="environmental"] .sticker-back-a,
+.card-slot[data-category="environmental"] .sticker-back-b {
+    background: #3CB8E8;
+}
+
+/* Label */
+.sticker-label {
+    position: relative;
+    z-index: 4;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    opacity: 0.7;
+    text-align: center;
+    padding: 0 20px;
+    line-height: 1.2;
+    letter-spacing: -0.28px;
+    pointer-events: none;
+    transition: font-size 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.35s ease,
+                letter-spacing 0.35s ease;
+}
+
+/* Selected state — emotion name shown, bigger + full opacity */
+.card-slot.selected .sticker-label {
+    font-size: 20px;
+    font-weight: 500;
+    opacity: 1;
+    letter-spacing: -0.4px;
+}
+
+/* ========================================
+   HOME - CTA BUTTON
+   ======================================== */
+.cta-area {
+    padding: 0 20px 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.cta-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 4px 4px 24px;
+    border-radius: 100px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: white;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    opacity: 0.4;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.2s ease;
+    box-shadow:
+        inset -1px -1px 1px -1px rgba(255, 255, 255, 0.2),
+        inset 1px 1px 1px -1px rgba(255, 255, 255, 0.2);
+}
+
+.cta-btn:not(:disabled) {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.cta-btn:not(:disabled):hover {
+    transform: translateY(-1px);
+}
+
+.cta-btn:not(:disabled):active {
+    transform: scale(0.98);
+}
+
+.cta-arrow {
+    width: 46px;
+    height: 46px;
+    background: rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+}
+
+.cta-arrow svg path,
+.cta-arrow svg circle {
+    stroke: #000;
+}
+
+.cta-btn:not(:disabled) .cta-arrow {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+/* ========================================
+   DETAIL EMOTION - NAV
+   ======================================== */
+.detail-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: none;
+    padding-bottom: 30px;
+}
+
+.detail-nav-inner {
+    display: flex;
+    align-items: center;
+    padding: 40px 40px 0;
+    gap: 20px;
+}
+
+.page-detail .nav-title {
+    font-size: 18px;
+}
+
+/* ========================================
+   DETAIL EMOTION - CANVAS
+   ======================================== */
+.canvas-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    cursor: grab;
+    z-index: 1;
+    background-color: #000;
+    /* Hexagonal dot grid — two offset radial-gradient layers */
+    background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.20) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255, 255, 255, 0.20) 1px, transparent 1px);
+    background-size: 32px 28px;
+    background-position: 0 0, 16px 14px;
+}
+
+.canvas-viewport:active {
+    cursor: grabbing;
+}
+
+.canvas-world {
+    position: absolute;
+    /* No fixed size — infinite canvas */
+    will-change: transform;
+    transform-origin: 0 0;
+}
+
+/* Emotion circle node */
+.emotion-node {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    will-change: transform;
+    /* Entrance: start as merged blob */
+    transform: scale(var(--enter-scale, 2.8));
+    opacity: 1;
+    animation: node-split var(--enter-duration, 0.8s) var(--enter-delay, 0s) cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* After entrance finishes, JS controls transform via proximity */
+.emotion-node.entered {
+    animation: none;
+    transition: box-shadow 0.25s ease;
+}
+
+@keyframes node-split {
+    0% {
+        transform: scale(var(--enter-scale, 2.8));
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Label fades in after split */
+.emotion-node-label {
+    opacity: 0;
+    animation: label-fade 0.4s var(--label-delay, 0.6s) ease forwards;
+}
+
+.emotion-node.entered .emotion-node-label {
+    animation: none;
+    opacity: 1;
+}
+
+@keyframes label-fade {
+    to { opacity: 1; }
+}
+
+/* Selected state — glow ring (scale handled by JS proximity) */
+.emotion-node.selected {
+    z-index: 20;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4),
+                0 0 30px rgba(255, 255, 255, 0.15);
+}
+
+.emotion-node.selected::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    animation: pulse-ring 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+    0%, 100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.06);
+    }
+}
+
+.emotion-node-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+    pointer-events: none;
+    line-height: 1.2;
+    padding: 4px;
+}
+
+.emotion-node.size-lg .emotion-node-label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.emotion-node.size-md .emotion-node-label {
+    font-size: 12px;
+}
+
+
+.reminder-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.reminder-btn:active {
+    transform: scale(0.96);
+}
+
+/* ========================================
+   DETAIL - CONFIRM FOOTER
+   ======================================== */
+.detail-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    padding: 0 20px 40px;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0) 100%
+    );
+    padding-top: 40px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.detail-footer.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+.confirm-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 4px 4px 24px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: white;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    box-shadow:
+        inset -1px -1px 1px -1px rgba(255, 255, 255, 0.2),
+        inset 1px 1px 1px -1px rgba(255, 255, 255, 0.2);
+}
+
+.confirm-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
+}
+
+.confirm-btn:active {
+    transform: scale(0.98);
+}
+
+.confirm-btn .cta-arrow {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+/* ========================================
+   RESPONSIVE - Mobile
+   ======================================== */
+@media (max-width: 480px) {
+    .nav-bar {
+        padding: 20px 16px;
+    }
+
+    .nav-title {
+        font-size: 14px;
+    }
+
+    .cards-area {
+        padding: 0 16px;
+    }
+
+    .cards-grid {
+        gap: 8px;
+    }
+
+    .sticker-label {
+        font-size: 11px;
+    }
+
+    .cta-area {
+        padding: 0 16px 24px;
+    }
+
+    .detail-nav-inner {
+        padding: 20px 16px 0;
+    }
+
+    .page-detail .nav-title {
+        font-size: 14px;
+    }
+
+    .glass-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .cta-arrow {
+        width: 40px;
+        height: 40px;
+    }
+}

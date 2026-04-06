@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Emofeel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- PAGE 1: HOME -->
+    <div class="page page-home active" id="pageHome">
+        <!-- Top Nav -->
+        <div class="nav-bar">
+            <button class="glass-btn" id="btnClose">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M1 1L13 13M13 1L1 13" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <h1 class="nav-title">Select the color that describes how you feel right now</h1>
+            <button class="glass-btn" id="btnSearch">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="6.5" cy="6.5" r="5.5" stroke="white" stroke-width="1.5"/>
+                    <path d="M11 11L15 15" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Emotion Cards Grid -->
+        <div class="cards-area">
+            <div class="cards-grid">
+                <div class="card-slot" data-category="physical">
+                    <div class="sticker-card">
+                        <div class="sticker-layer sticker-back-a"></div>
+                        <div class="sticker-layer sticker-back-b"></div>
+                        <div class="sticker-layer sticker-front"></div>
+                        <span class="sticker-label">(Physical Energy)</span>
+                    </div>
+                </div>
+                <div class="card-slot" data-category="mental">
+                    <div class="sticker-card">
+                        <div class="sticker-layer sticker-back-a"></div>
+                        <div class="sticker-layer sticker-back-b"></div>
+                        <div class="sticker-layer sticker-front"></div>
+                        <span class="sticker-label">(Mental Energy)</span>
+                    </div>
+                </div>
+                <div class="card-slot" data-category="emotional">
+                    <div class="sticker-card">
+                        <div class="sticker-layer sticker-back-a"></div>
+                        <div class="sticker-layer sticker-back-b"></div>
+                        <div class="sticker-layer sticker-front"></div>
+                        <span class="sticker-label">(Emotional Energy)</span>
+                    </div>
+                </div>
+                <div class="card-slot" data-category="environmental">
+                    <div class="sticker-card">
+                        <div class="sticker-layer sticker-back-a"></div>
+                        <div class="sticker-layer sticker-back-b"></div>
+                        <div class="sticker-layer sticker-front"></div>
+                        <span class="sticker-label">(Environmental Energy)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom CTA -->
+        <div class="cta-area">
+            <button class="cta-btn" id="ctaBtn" disabled>
+                <span>Continue your journey</span>
+                <div class="glass-btn cta-arrow">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- PAGE 2: DETAIL EMOTION -->
+    <div class="page page-detail" id="pageDetail">
+        <!-- Top Nav with gradient overlay -->
+        <div class="detail-nav">
+            <div class="detail-nav-inner">
+                <button class="glass-btn" id="btnBack">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M10 3L5 8L10 13" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <h1 class="nav-title" id="detailTitle">Select Physical Energy (Body)</h1>
+            </div>
+        </div>
+
+        <!-- Draggable Canvas -->
+        <div class="canvas-viewport" id="canvasViewport">
+            <div class="canvas-world" id="canvasWorld">
+                <!-- Emotion circles injected by JS -->
+            </div>
+        </div>
+
+
+        <!-- Bottom: Confirm Selection -->
+        <div class="detail-footer hidden" id="detailFooter">
+            <button class="confirm-btn" id="confirmBtn">
+                <span id="confirmLabel">Confirm selection</span>
+                <div class="glass-btn cta-arrow">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 8L7 11L12 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
