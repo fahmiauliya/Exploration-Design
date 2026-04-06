@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Streak Tree</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════
+         STATE 1: HOMEPAGE
+    ═══════════════════════════════════════════════════ -->
+    <main class="homepage">
+        <div class="homepage__bg">
+            <video class="homepage__bg-video" autoplay muted loop playsinline id="bgVideo">
+                <source src="bg-video-smooth.mp4" type="video/mp4">
+            </video>
+            <div class="homepage__bg-overlay"></div>
+        </div>
+
+        <div class="homepage__topbar">
+            <button class="glass-pill streak-pill" id="streakPillBtn" aria-label="Open streak tracker">
+                <svg class="glass-pill__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <span class="glass-pill__text" id="streakPillText">0/7</span>
+            </button>
+            <button class="glass-pill glass-pill--icon-only" aria-label="Settings">
+                <svg class="glass-pill__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/>
+                    <path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/>
+                    <path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="homepage__quote">
+            <p class="homepage__quote-text">
+                I've been through worse times,<br>
+                I'll make it through this.
+            </p>
+        </div>
+    </main>
+
+
+    <!-- ═══════════════════════════════════════════════════
+         STATE 2: STREAK MODAL
+    ═══════════════════════════════════════════════════ -->
+    <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal" id="modalCard">
+
+            <div class="modal__header">
+                <span class="modal__title" id="modalTitle">2-Days Streak</span>
+                <button class="modal__close" id="modalCloseBtn" aria-label="Close modal">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M15 5L5 15" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M5 5L15 15" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- ═══════════════════════════════════════════
+                 TREE ILLUSTRATION — SVG Mask approach
+
+                 How it works:
+                 - The tree trunk is rendered inside a <mask>
+                 - A white <rect> (the "reveal rect") controls
+                   how much of the tree is visible
+                 - The rect's Y position animates upward:
+                   Lvl 0: only bottom seed visible
+                   Lvl 1: full trunk revealed
+                 - Leaves & foliage are separate groups
+                   that fade+scale in at Lvl 2 & 3
+                 - A Gaussian blur on the mask edge creates
+                   a soft, natural growth reveal
+            ═══════════════════════════════════════════ -->
+            <div class="modal__tree" id="treeContainer">
+                <svg class="tree-svg" viewBox="0 0 473 275" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <!-- Soft-edge blur filter for the mask reveal -->
+                        <filter id="maskBlur">
+                            <feGaussianBlur stdDeviation="6" />
+                        </filter>
+
+                        <!-- TRUNK MASK: white rect reveals the tree shape -->
+                        <!-- The rect Y is animated via JS to grow upward -->
+                        <mask id="trunkMask">
+                            <rect
+                                id="maskRect"
+                                x="160"
+                                y="270"
+                                width="200"
+                                height="220"
+                                fill="white"
+                                filter="url(#maskBlur)"
+                            />
+                        </mask>
+
+                        <!-- LEAVES MASK: same approach for leaf reveal -->
+                        <mask id="leavesMask">
+                            <rect
+                                id="leavesMaskRect"
+                                x="140"
+                                y="270"
+                                width="240"
+                                height="240"
+                                fill="white"
+                                filter="url(#maskBlur)"
+                            />
+                        </mask>
+                    </defs>
+
+                    <!-- Background -->
+                    <rect width="473" height="275" fill="#EDE3D1"/>
+
+                    <!-- TRUNK — masked by the reveal rect -->
+                    <g mask="url(#trunkMask)">
+                        <path d="M234.368 77.5068C234.522 78.027 234.677 78.6966 234.823 79.5068C235.162 81.3821 235.468 83.9479 235.743 86.9941C236.292 93.0833 236.713 101.049 237.029 109.16C237.662 125.38 237.876 142.151 237.876 145.582V147.302L238.798 145.851C240.993 142.395 244.867 136.348 249.136 130.808C251.27 128.037 253.497 125.402 255.654 123.285C257.73 121.249 259.707 119.728 261.449 119.003C261.304 119.2 261.121 119.446 260.899 119.732C260.304 120.502 259.458 121.565 258.439 122.84C256.404 125.387 253.686 128.772 250.937 132.313C248.188 135.854 245.401 139.558 243.229 142.747C242.142 144.341 241.205 145.813 240.501 147.075C239.805 148.324 239.31 149.412 239.149 150.227C237.83 156.929 237.53 164.672 237.544 172.357C237.551 176.202 237.637 180.041 237.715 183.732C237.793 187.426 237.863 190.971 237.839 194.24L237.825 196.113L238.771 194.496C241.132 190.457 243.791 185.956 246.94 181.935C249.475 178.699 252.311 175.795 255.542 173.7C249.333 181.008 242.559 189.191 239.252 198.187C238.453 200.359 237.925 203.834 237.568 207.96C237.21 212.101 237.021 216.948 236.919 221.896C236.817 226.844 236.803 231.902 236.795 236.462C236.787 241.025 236.785 245.085 236.71 248.053L236.677 249.149L236.667 249.479L236.967 249.618L238.371 250.269C245.137 253.469 251.91 257.719 256.27 263.718C243.342 265.961 226.518 265.669 213.548 263.706C218.684 257.886 224.003 255.223 230.867 251.08C231.47 250.716 231.924 250.448 232.258 250.222C232.595 249.993 232.854 249.778 233.05 249.506C233.247 249.231 233.352 248.934 233.443 248.592C233.528 248.273 233.627 247.806 233.763 247.262L233.774 247.213L233.776 247.163L234.029 241.204C234.412 232.432 235.043 217.951 235.281 204.842C235.4 198.288 235.421 192.069 235.264 187.076C235.185 184.58 235.061 182.384 234.882 180.602C234.704 178.832 234.467 177.429 234.147 176.545C230.698 167.008 223.025 156.483 216.514 148.395L215.229 146.811C214.942 146.46 214.481 145.949 213.971 145.374C213.455 144.793 212.879 144.135 212.343 143.472C211.805 142.806 211.317 142.147 210.976 141.566C210.805 141.276 210.677 141.016 210.597 140.793C210.577 140.738 210.56 140.686 210.547 140.639L210.605 140.623C214.94 143.253 219.456 148.415 223.609 154.119C227.808 159.886 231.591 166.142 234.4 170.745L235.277 172.183L235.327 170.499C235.897 150.879 234.793 131.121 234.893 111.599C234.911 107.912 234.431 100.411 234.161 93.1768C234.026 89.5486 233.942 85.9789 233.998 82.9609C234.039 80.7643 234.156 78.891 234.368 77.5068Z" stroke="#39290C" fill="none"/>
+                    </g>
+
+                    <!-- LEAVES (Lvl 2) — masked by leaves reveal rect -->
+                    <g class="tree-leaves" mask="url(#leavesMask)" opacity="0">
+                        <path d="M210.577 141.8C204.804 141.076 192.876 133.013 196.764 126.835C197.506 126.235 197.59 126.252 198.539 126.096C206.882 124.724 208.594 138.523 211.938 140.789L210.577 141.8Z" fill="#39290C"/>
+                        <path d="M214.24 145.796C211.389 148.146 207.152 150.283 203.376 150.088C200.582 149.944 197.679 148.836 198.347 145.513C201.67 141.302 208.537 143.66 212.782 144.804L214.24 145.796Z" fill="#39290C"/>
+                        <path d="M217.151 145.492C216.986 141.6 216.205 135.654 220.885 134.145C226.424 136.424 221.946 145.126 219.668 148.495C218.466 147.784 217.933 146.69 217.151 145.492Z" fill="#39290C"/>
+                        <path d="M233.665 80.4017C231.795 75.4627 228.556 62.9807 235.145 60.2753C236.055 59.9036 237.076 59.9086 237.983 60.2883C244.998 63.2587 236.357 76.5751 235.345 80.2735L233.665 80.4017Z" fill="#39290C"/>
+                        <path d="M234.074 90.8996C228.269 90.3129 216.753 85.1024 219.385 77.5907C225.117 71.8227 230.864 84.4322 233.889 87.7204L234.074 90.8996Z" fill="#39290C"/>
+                        <path d="M236.648 95.5938C238.79 91.625 242.962 83.8549 248.581 85.238C255.466 91.3489 240.795 98.7035 236.846 101.083C236.284 99.417 236.553 97.4096 236.648 95.5938Z" fill="#39290C"/>
+                        <path d="M260.376 119.101C258.797 114.326 256.569 99.1957 265.294 100.477C270.003 103.696 266.456 110.809 264.774 114.653C263.922 116.148 262.949 118.175 261.662 119.202L260.376 119.101Z" fill="#39290C"/>
+                        <path d="M263.643 119.601C267.498 119.859 273.724 119.956 275.234 124.541C272.229 129.874 262.451 125.448 258.338 123.674L258.092 122.61C259.047 121.042 261.769 120.353 263.643 119.601Z" fill="#39290C"/>
+                        <path d="M252.964 176.513C249.081 172.433 246.261 160.756 253.389 159C258.469 161.545 256.001 169.601 255.038 173.855C254.547 174.492 253.454 176 252.964 176.513Z" fill="#39290C"/>
+                    </g>
+
+                    <!-- FOLIAGE BLOBS (Lvl 3) -->
+                    <g class="tree-foliage" opacity="0">
+                        <path d="M281.37 62.3348C287.765 59.0208 294.601 57.8692 301.441 60.296C316.056 65.4814 312.976 77.4761 307.797 87.9732C315.05 88.4357 321.626 91.1168 320.952 100.015C320.349 107.974 315.054 114.672 307.466 117.263C309.394 122.42 310.69 126.768 308.307 132.502C303.735 143.502 282.15 147.978 276.814 135.379C276.439 134.495 276.071 132.244 275.886 131.184C268.106 136.323 262.124 138.979 262.701 125.483C262.741 124.545 263.145 123.013 263.061 122.141C263.022 122.027 262.693 121.802 262.569 121.702L260.046 121.978C258.867 121.137 257.561 118.379 257.687 118.406C251.866 117.115 243.663 118.837 249.903 109.07C241.846 104.839 239.697 97.577 244.626 89.6997C246.96 87.5444 248.561 87.1545 251.606 86.8602C251.286 85.4018 250.761 83.0057 250.685 81.5549C250.437 77.4147 251.846 73.3464 254.598 70.2575C257.356 67.1128 261.257 65.2185 265.42 65.0032C269.579 64.8133 273 66.2623 276.012 69.0819C277.661 65.6556 278.293 64.6088 281.37 62.3348Z" fill="#39290C"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M182.23 91.1748C190.996 81.4846 209.929 86.4796 212.101 99.6943C212.343 101.168 212.396 102.683 212.459 104.144C220.567 107.339 223.723 109.812 226.153 118.235C224.334 126.052 221.434 130.791 213.327 132.777L212.7 133.136C212.798 135.187 213.202 137.216 213.553 139.241C212.542 142.467 212.43 142.788 209.503 144.404C210.57 146.14 211.242 147.871 212.03 149.74C209.047 160.281 198.951 164.183 192.512 153.64C189.987 163.683 182.693 170.642 172.174 165.229C169.119 163.691 166.804 160.999 165.742 157.75C164.194 152.871 165.942 149.198 168.106 145.028C154.092 144.623 143.823 136.502 145.293 121.367C145.977 114.328 150.932 106.731 157.378 103.62C159.416 102.637 163.718 101.673 165.308 100.424C164.071 96.6545 164.519 91.6741 168.176 89.3886C169.392 88.6224 170.867 88.3847 172.261 88.7295C175.771 89.5801 177.777 93.0959 179.568 95.9218C180.31 94.1509 180.951 92.5883 182.23 91.1748Z" fill="#39290C"/>
+                        <path d="M255.038 154.179C256.119 151.001 257.181 148.517 260.342 146.933C265.585 144.432 271.225 147.234 273.906 152.067C274.625 153.365 274.467 157.096 275.134 157.647C276.004 158.366 279.092 158.592 280 160.577C279.942 162.718 277.409 163.901 275.698 164.775C277.529 166.238 278.769 167.82 279.076 170.241C279.303 172.136 278.747 174.041 277.537 175.514C275.332 178.241 272.764 178.529 269.546 178.626C264.895 185.627 256.549 183.848 254.208 175.969C253.361 173.117 252.135 176.141 250.638 172.838C250.096 172.6 248.377 172.72 247.699 172.739C243.6 169.727 243.547 165.974 248.451 163.903C246.328 162.641 244.803 161.693 244.156 159.086C243.801 157.615 244.058 156.063 244.866 154.786C246.099 152.808 247.914 152.006 250.075 151.484C252.592 152.155 253.138 152.407 255.038 154.179Z" fill="#39290C"/>
+                        <path d="M209.948 73.2617C204.863 71.4923 200.892 69.7617 198.387 64.6743C194.433 56.238 198.989 47.224 206.77 42.9775C208.86 41.8377 214.842 42.1323 215.734 41.069C216.896 39.6822 217.293 34.7311 220.487 33.2976C223.919 33.4145 225.789 37.4897 227.172 40.244C229.538 37.323 232.089 35.3525 235.976 34.8867C239.017 34.5438 242.066 35.4568 244.416 37.4137C248.764 40.9792 249.197 45.1013 249.317 50.2641C260.494 57.8002 257.548 71.1658 244.887 74.8332C240.303 76.1608 245.14 78.1597 239.826 80.5243C239.437 81.3909 239.612 84.1493 239.634 85.2363C234.758 91.7776 228.738 91.8217 225.471 83.9328C223.424 87.3237 221.887 89.7588 217.698 90.7688C215.335 91.3209 212.849 90.8919 210.81 89.5812C207.651 87.5823 206.384 84.6634 205.572 81.191C206.675 77.1625 207.085 76.2889 209.948 73.2617Z" fill="#39290C"/>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="modal__content">
+                <h3 class="modal__heading">A New daily habit</h3>
+                <p class="modal__subtext">Build a streak to make practicing affirmations a habbit that sticks!</p>
+            </div>
+
+            <!-- Streak day tracker -->
+            <div class="streak-days" id="streakDays">
+                <div class="streak-day streak-day--checked" data-day="0">
+                    <span class="streak-day__label">Su</span>
+                    <div class="streak-day__circle">
+                        <div class="streak-day__face streak-day__face--front"></div>
+                        <div class="streak-day__face streak-day__face--back">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 13l4 4L18 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="streak-day streak-day--checked" data-day="1">
+                    <span class="streak-day__label">Mo</span>
+                    <div class="streak-day__circle">
+                        <div class="streak-day__face streak-day__face--front"></div>
+                        <div class="streak-day__face streak-day__face--back">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 13l4 4L18 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="streak-day" data-day="2">
+                    <span class="streak-day__label">Tu</span>
+                    <div class="streak-day__circle">
+                        <div class="streak-day__face streak-day__face--front"></div>
+                        <div class="streak-day__face streak-day__face--back">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 13l4 4L18 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="streak-day" data-day="3">
+                    <span class="streak-day__label">We</span>
+                    <div class="streak-day__circle">
+                        <div class="streak-day__face streak-day__face--front"></div>
+                        <div class="streak-day__face streak-day__face--back">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 13l4 4L18 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="streak-day" data-day="4">
+                    <span class="streak-day__label">Th</span>
+                    <div class="streak-day__circle">
+                        <div class="streak-day__face streak-day__face--front"></div>
+                        <div class="streak-day__face streak-day__face--back">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 13l4 4L18 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="streak-day" data-day="5">
+                    <span class="streak-day__label">Fr</span>
+                    <div class="streak-day__circle">
+                        <div class="streak-day__face streak-day__face--front"></div>
+                        <div class="streak-day__face streak-day__face--back">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 13l4 4L18 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="streak-day" data-day="6">
+                    <span class="streak-day__label">Sun</span>
+                    <div class="streak-day__circle">
+                        <div class="streak-day__face streak-day__face--front"></div>
+                        <div class="streak-day__face streak-day__face--back">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 13l4 4L18 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal__footer">
+                <button class="modal__cta" id="modalCta">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

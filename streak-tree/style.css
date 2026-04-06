@@ -1,0 +1,760 @@
+/* ═══════════════════════════════════════════════════
+   STREAK TREE — Styles
+   All values from Figma MCP (node 1659-36, 1659-9)
+   ═══════════════════════════════════════════════════ */
+
+/* ── Local font: Elegant (from Figma design) ───── */
+@font-face {
+    font-family: 'Elegant';
+    src: url('fonts/Elegant.otf') format('opentype'),
+         url('fonts/Elegant.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ── Design Tokens (Figma MCP) ─────────────────── */
+:root {
+    /* Colors */
+    --cream:          #EDE3D1;    /* modal bg — rgb(0.931, 0.890, 0.821) */
+    --cream-tree:     #EDE3D1;    /* tree area — rgb(0.929, 0.890, 0.820) */
+    --brown:          #392C0C;    /* primary text + button */
+    --brown-stroke:   #39290C;    /* tree stroke */
+    --overlay:        rgba(29, 28, 10, 0.50); /* modal overlay */
+    --white:          #ffffff;
+    --black:          #000000;
+
+    /* Typography */
+    --font-serif: 'Elegant', 'Playfair Display', 'Georgia', serif;
+    --font-sans:  'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Spacing (from Figma padding/gap values) */
+    --sp-4:  4px;
+    --sp-7:  7px;
+    --sp-8:  8px;
+    --sp-10: 10px;
+    --sp-12: 12px;
+    --sp-13: 13px;
+    --sp-16: 16px;
+    --sp-20: 20px;
+    --sp-24: 24px;
+    --sp-32: 32px;
+
+    /* Radii */
+    --r-pill:   100px;   /* glassmorphism pills */
+    --r-modal:  32px;    /* modal card */
+    --r-btn:    12px;    /* CTA button */
+    --r-circle: 1000px;  /* day circles */
+
+    /* Sizes */
+    --day-size:    36px;     /* day circle diameter */
+    --modal-w:     473px;    /* modal width */
+    --tree-h:      275px;    /* tree area height */
+
+    /* Animation */
+    --flip-dur:    0.6s;
+    --flip-delay:  0.12s;
+    --modal-dur:   0.35s;
+}
+
+
+/* ── Reset ─────────────────────────────────────── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: var(--font-sans);
+    color: var(--brown);
+}
+
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   HOMEPAGE (Frame: Home — 1659:9)
+   1200x800, bg white, clipsContent
+   ═══════════════════════════════════════════════════ */
+.homepage {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* ── Background image + 30% dark overlay ───────── */
+/* Figma MCP: RECTANGLE 1659:10 — IMAGE fill + 30% black SOLID overlay */
+.homepage__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.homepage__bg-img,
+.homepage__bg-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.homepage__bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.30);
+}
+
+
+/* ── Top bar (Frame 24) ────────────────────────── */
+/* Figma MCP: horizontal, gap 8, positioned top-right */
+.homepage__topbar {
+    position: absolute;
+    top: var(--sp-32);
+    right: var(--sp-32);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-8);
+}
+
+/* ── Glassmorphism pill (Frame 22) ─────────────── */
+/* Figma MCP: bg white 10%, border white 12%, blur 4
+   padding: 12 16 12 20, gap 7, radius 100
+   Inner shadows x4 for depth */
+.glass-pill {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-7);
+    padding: var(--sp-12) var(--sp-20) var(--sp-12) var(--sp-16);
+    border-radius: var(--r-pill);
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: var(--white);
+    transition: background 0.2s ease, transform 0.15s ease;
+    box-shadow:
+        inset -1px -1px 1px -1px rgba(255,255,255,0.20),
+        inset  1px  1px 1px -1px rgba(255,255,255,0.20),
+        inset  1px  1px 2px -1px rgba(255,255,255,0.50),
+        inset -1px -1px 2px -1px rgba(255,255,255,0.50);
+}
+
+.glass-pill:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.glass-pill:active {
+    transform: scale(0.97);
+}
+
+/* Figma MCP: Frame 23 — 46x46 icon-only circle */
+.glass-pill--icon-only {
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    justify-content: center;
+}
+
+.glass-pill__icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Figma MCP: Inter Medium 18px, white, line-height 120% */
+.glass-pill__text {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+
+/* ── Quote (TEXT 1659:11) ──────────────────────── */
+/* Figma MCP: Elegant 48px, white, center
+   letter-spacing: -1.92, line-height 120% */
+.homepage__quote {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: 0 var(--sp-32);
+    margin-top: 30vh;
+}
+
+.homepage__quote-text {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 1.2;
+    letter-spacing: -1.92px;
+    color: var(--white);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   MODAL OVERLAY
+   Figma MCP: Frame 27 — rgba(29,28,10,0.5)
+   ═══════════════════════════════════════════════════ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-20);
+    visibility: hidden;
+    opacity: 0;
+    background: transparent;
+    transition:
+        opacity var(--modal-dur) ease,
+        visibility 0s linear var(--modal-dur),
+        background var(--modal-dur) ease;
+}
+
+.modal-overlay.is-open {
+    visibility: visible;
+    opacity: 1;
+    background: var(--overlay);
+    transition:
+        opacity var(--modal-dur) ease,
+        visibility 0s linear 0s,
+        background var(--modal-dur) ease;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   MODAL CARD (Frame 25 — 1659:36)
+   Figma MCP: bg #EDE3D2, radius 32, width 473
+   vertical layout, clipsContent
+   Gradient border strokes (TL→20% fade, 80%→BR fade)
+   Inner shadows x4
+   ═══════════════════════════════════════════════════ */
+.modal {
+    position: relative;
+    width: 100%;
+    max-width: var(--modal-w);
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--cream);
+    border-radius: var(--r-modal);
+    /* Center modal content vertically within card */
+    display: flex;
+    flex-direction: column;
+    /* Figma MCP: gradient border — white at TL corner, fades to transparent,
+       reappears white at BR corner */
+    border: 1px solid transparent;
+    background-image:
+        linear-gradient(var(--cream), var(--cream)),
+        linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(153,153,153,0) 20%),
+        linear-gradient(135deg, rgba(153,153,153,0) 80%, rgba(255,255,255,1) 100%);
+    background-origin: border-box;
+    background-clip: padding-box, border-box, border-box;
+    /* Figma MCP: inner shadow stack */
+    box-shadow:
+        inset -1px -1px 1px -1px rgba(255,255,255,0.20),
+        inset  1px  1px 1px -1px rgba(255,255,255,0.20),
+        inset  1px  1px 2px -1px rgba(255,255,255,0.50),
+        inset -1px -1px 2px -1px rgba(255,255,255,0.50);
+    /* Open animation */
+    transform: scale(0.92) translateY(16px);
+    transition: transform var(--modal-dur) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.is-open .modal {
+    transform: scale(1) translateY(0);
+}
+
+.modal::-webkit-scrollbar { width: 0; }
+
+
+/* ── Modal header (Frame 26) ──────────────────── */
+/* Figma MCP: horizontal, full-width, padding 20
+   primaryAxisAlignItems: MAX (close button pushed right)
+   Title (Frame 43) absolutely centered */
+.modal__header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: var(--sp-20);
+    min-height: 60px;
+}
+
+/* Figma MCP: "2-Days Streak" — Elegant 16px, #392C0C
+   Absolutely centered within header */
+.modal__title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.2;
+    color: var(--brown);
+    white-space: nowrap;
+}
+
+/* Figma MCP: close icon frame — 20x20, opacity 0.34, black */
+.modal__close {
+    position: relative;
+    z-index: 2;
+    opacity: 0.34;
+    color: var(--black);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+}
+
+.modal__close:hover {
+    opacity: 0.7;
+}
+
+
+/* ── Tree illustration (Frame 39 — 1659:44) ──── */
+/* Figma MCP: 473x275, bg: #EDE3D1, clipsContent
+   Tree SVG (Union) centered, stroke #392C0C */
+.modal__tree {
+    width: 100%;
+    height: var(--tree-h);
+    background: var(--cream-tree);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* ═══ Tree SVG — mask-based growth animation ═══ */
+/* The trunk is revealed by animating a white <rect>
+   inside an SVG <mask>. The rect's Y position moves
+   upward to "grow" the tree naturally from the base.
+   A Gaussian blur on the mask edge softens the reveal. */
+
+.tree-svg {
+    width: 100%;
+    height: 100%;
+}
+
+
+/* ═══ Tree sway — subtle wind-like motion ═══════ */
+/* Trunk sways gently from the base (transform-origin bottom center).
+   Leaves flutter with slight rotation + translate.
+   Foliage drifts with heavier, slower movement.
+   Each element uses a different duration to feel organic. */
+
+/* Trunk: gentle sway from base */
+.tree-svg > g[mask="url(#trunkMask)"] {
+    transform-origin: 236px 265px; /* base of the tree */
+    animation: trunk-sway 6s ease-in-out infinite;
+}
+
+@keyframes trunk-sway {
+    0%, 100% { transform: rotate(0deg); }
+    25%      { transform: rotate(0.4deg); }
+    50%      { transform: rotate(-0.3deg); }
+    75%      { transform: rotate(0.2deg); }
+}
+
+/* Foliage blobs: slow, heavy drift like canopy in wind */
+.tree-foliage.is-visible path {
+    animation: foliage-drift 7s ease-in-out infinite;
+}
+
+.tree-foliage.is-visible path:nth-child(1) { animation-delay: 0.0s; animation-duration: 7s; }
+.tree-foliage.is-visible path:nth-child(2) { animation-delay: 1.5s; animation-duration: 8s; }
+.tree-foliage.is-visible path:nth-child(3) { animation-delay: 0.8s; animation-duration: 6.5s; }
+.tree-foliage.is-visible path:nth-child(4) { animation-delay: 0.4s; animation-duration: 7.5s; }
+
+@keyframes foliage-drift {
+    0%, 100% { transform: scale(1) translate(0, 0) rotate(0deg); }
+    20%      { transform: scale(1.01) translate(1px, -0.5px) rotate(0.3deg); }
+    45%      { transform: scale(0.99) translate(-0.8px, 0.3px) rotate(-0.4deg); }
+    70%      { transform: scale(1.005) translate(0.5px, -0.3px) rotate(0.2deg); }
+}
+
+/* Mask rects are animated via JS (setAttribute on Y).
+   CSS transitions on SVG attributes don't work reliably,
+   so we animate via requestAnimationFrame in JS. */
+
+/* ── Leaves (Lvl 2): fade + scale with stagger ── */
+.tree-leaves {
+    transition: opacity 0.6s ease;
+}
+
+.tree-leaves path {
+    transform-origin: center;
+    transform: scale(0);
+    opacity: 0;
+    transition:
+        transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.4s ease;
+}
+
+.tree-leaves.is-visible {
+    opacity: 1;
+}
+
+.tree-leaves.is-visible path {
+    transform: scale(1);
+    opacity: 1;
+    /* sway animation is applied via .is-visible selector above */
+}
+
+/* Stagger each leaf */
+.tree-leaves path:nth-child(1) { transition-delay: 0.00s; }
+.tree-leaves path:nth-child(2) { transition-delay: 0.06s; }
+.tree-leaves path:nth-child(3) { transition-delay: 0.12s; }
+.tree-leaves path:nth-child(4) { transition-delay: 0.18s; }
+.tree-leaves path:nth-child(5) { transition-delay: 0.24s; }
+.tree-leaves path:nth-child(6) { transition-delay: 0.30s; }
+.tree-leaves path:nth-child(7) { transition-delay: 0.36s; }
+.tree-leaves path:nth-child(8) { transition-delay: 0.42s; }
+.tree-leaves path:nth-child(9) { transition-delay: 0.48s; }
+
+/* ── Foliage blobs (Lvl 3): scale + fade ───────── */
+.tree-foliage {
+    transition: opacity 0.5s ease;
+}
+
+.tree-foliage path {
+    transform-origin: center;
+    transform: scale(0);
+    opacity: 0;
+    transition:
+        transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.5s ease;
+}
+
+.tree-foliage.is-visible {
+    opacity: 1;
+}
+
+.tree-foliage.is-visible path {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Stagger foliage blobs */
+.tree-foliage path:nth-child(1) { transition-delay: 0.10s; }
+.tree-foliage path:nth-child(2) { transition-delay: 0.30s; }
+.tree-foliage path:nth-child(3) { transition-delay: 0.50s; }
+.tree-foliage path:nth-child(4) { transition-delay: 0.70s; }
+
+
+/* ── Text content (Frame 35 — 1659:46) ────────── */
+/* Figma MCP: vertical, center-aligned
+   paddingTop: 24, itemSpacing: 4
+   clipsContent, full-width */
+.modal__content {
+    text-align: center;
+    padding: var(--sp-24) var(--sp-32) var(--sp-8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-4);
+}
+
+/* Figma MCP: "A New daily habit" — Elegant 32px, #392C0C, line-height 120% */
+.modal__heading {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.2;
+    letter-spacing: 0;
+    color: var(--brown);
+}
+
+/* Figma MCP: subtitle — Inter Regular 16px, #392C0C
+   line-height 120%, width 345, center */
+.modal__subtext {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.2;
+    color: var(--brown);
+    max-width: 345px;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   STREAK DAY TRACKER (Frame 34 — 1659:49)
+   Figma MCP: horizontal, padding 32
+   7 items, each layoutGrow: 1 (fill distributed)
+   ═══════════════════════════════════════════════════ */
+.streak-days {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-24) var(--sp-32);
+}
+
+/* Each day (e.g. Frame 29 — 1659:50)
+   Figma MCP: vertical, center-aligned
+   paddingLeft/Right: 13, itemSpacing: 8
+   layoutGrow: 1 (fill) */
+.streak-day {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-8);
+    padding: 0 var(--sp-8);
+    /* 3D flip perspective */
+    perspective: 400px;
+}
+
+/* Figma MCP: Inter Medium 12px, black, center, line-height 120% */
+.streak-day__label {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--black);
+    width: 100%;
+}
+
+
+/* ── Day circle (3D flip container) ────────────── */
+/* Figma MCP: 36x36, border-radius 1000 */
+.streak-day__circle {
+    width: var(--day-size);
+    height: var(--day-size);
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform var(--flip-dur) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.streak-day__face {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--r-circle);
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Front face: unchecked ─────────────────────── */
+/* Figma MCP (Frame 38, e.g. 1659:64):
+   fill: GRADIENT_RADIAL — center #EDE3D1, edge white 40%
+   stroke: white, dashed [4,4], 1px inside
+   radius: 1000 */
+.streak-day__face--front {
+    background: radial-gradient(
+        circle at center,
+        #EDE3D1 0%,
+        rgba(255, 255, 255, 0.40) 100%
+    );
+    border: 1px dashed var(--white);
+}
+
+/* ── Back face: checked ────────────────────────── */
+/* Figma MCP (Frame 37, e.g. 1659:52):
+   fill: #392C0C solid + 10% gradient (white 30% top → black 100% bottom)
+   stroke: solid black 1px inside
+   radius: 1000
+   Contains 24x24 checkmark icon, white stroke, weight 2 */
+.streak-day__face--back {
+    transform: rotateY(180deg);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.03) 30%, rgba(0,0,0,0.10) 100%),
+        var(--brown);
+    border: 1px solid var(--black);
+}
+
+/* Flip trigger */
+.streak-day__circle.is-flipped {
+    transform: rotateY(180deg);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   MILESTONE PLACEHOLDERS
+   Not in Figma — spec-required placeholder blocks
+   Styled to blend with the cream card aesthetic
+   ═══════════════════════════════════════════════════ */
+.modal__milestones {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-8);
+    padding: 0 var(--sp-32);
+}
+
+.milestone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-12) var(--sp-16);
+    border-radius: var(--r-btn);
+    border: 1px dashed rgba(57, 44, 12, 0.12);
+    background: rgba(57, 44, 12, 0.02);
+    min-height: 44px;
+}
+
+.milestone__label {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 13px;
+    color: rgba(57, 44, 12, 0.30);
+    text-align: center;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   CTA BUTTON (Frame 36 > Frame 42 — 1659:78)
+   Figma MCP: bg #392C0C + 10% gradient overlay
+   border: solid black, radius 12
+   padding: 12 10, full width (fill)
+   Drop shadows: (0,6) blur 4 a12% + (2,2) blur 10 a12%
+   ═══════════════════════════════════════════════════ */
+.modal__footer {
+    padding: var(--sp-16) var(--sp-32) var(--sp-24);
+}
+
+.modal__cta {
+    width: 100%;
+    padding: var(--sp-12) var(--sp-10);
+    border-radius: var(--r-btn);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--white);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(0,0,0,0.05) 50%),
+        var(--brown);
+    border: 1px solid var(--black);
+    box-shadow:
+        0 6px 4px rgba(0, 0, 0, 0.12),
+        2px 2px 10px rgba(0, 0, 0, 0.12);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.modal__cta:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 8px 6px rgba(0, 0, 0, 0.14),
+        2px 4px 14px rgba(0, 0, 0, 0.14);
+}
+
+.modal__cta:active {
+    transform: translateY(0);
+    box-shadow:
+        0 3px 2px rgba(0, 0, 0, 0.12),
+        1px 1px 6px rgba(0, 0, 0, 0.10);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   BODY SCROLL LOCK
+   ═══════════════════════════════════════════════════ */
+body.modal-open {
+    overflow: hidden;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 560px) {
+    .homepage__quote-text {
+        font-size: 32px;
+        letter-spacing: -1px;
+    }
+
+    .homepage__topbar {
+        top: var(--sp-20);
+        right: var(--sp-20);
+    }
+
+    .modal {
+        max-width: 100%;
+        border-radius: var(--sp-24);
+    }
+
+    .modal__tree {
+        height: 200px;
+    }
+
+    .modal__tree-svg {
+        height: 140px;
+    }
+
+    .modal__heading {
+        font-size: 26px;
+    }
+
+    .modal__subtext {
+        font-size: 14px;
+        max-width: 90%;
+    }
+
+    .streak-days {
+        padding: var(--sp-24) var(--sp-16);
+    }
+
+    .streak-day {
+        padding: 0 var(--sp-8);
+    }
+
+    .streak-day__label {
+        font-size: 11px;
+    }
+
+    .modal__content {
+        padding: var(--sp-24) var(--sp-20) 0;
+    }
+
+    .modal__milestones {
+        padding: 0 var(--sp-20);
+    }
+
+    .modal__footer {
+        padding: var(--sp-16);
+    }
+}
+
+@media (max-width: 380px) {
+    .homepage__quote-text {
+        font-size: 26px;
+    }
+
+    .glass-pill__text {
+        font-size: 15px;
+    }
+
+    :root {
+        --day-size: 30px;
+    }
+
+    .streak-days {
+        padding: var(--sp-20) var(--sp-12);
+    }
+
+    .streak-day {
+        padding: 0 4px;
+    }
+}
